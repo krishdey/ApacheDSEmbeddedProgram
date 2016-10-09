@@ -2,3 +2,17 @@
 [22:18:04] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
 [00:18:21] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
 [00:18:21] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[00:59:40] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[00:59:40] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[00:59:40] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'top' already exists in the attribute (objectClass)
+[00:59:40] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'domain' already exists in the attribute (objectClass)
+[00:59:40] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'extensibleObject' already exists in the attribute (objectClass)
+[00:59:40] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'ou=groups' is not present in the entry
+[00:59:40] WARN [org.apache.directory.server.core.referral.ReferralInterceptor] - could not find objectClass attribute in entry: Entry
+    dn[n]: ou=groups,dc=jpmis,dc=com
+
+    ou: groups
+
+[00:59:40] ERROR [org.apache.directory.server.core.schema.SchemaInterceptor] - ERR_60 Entry ou=groups,dc=jpmis,dc=com does not contain a STRUCTURAL ObjectClass
+[01:01:04] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[01:01:04] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
