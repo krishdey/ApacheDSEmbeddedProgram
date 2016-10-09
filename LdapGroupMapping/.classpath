@@ -5,6 +5,7 @@
 	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/directory/server/apacheds-all/2.0.0-M23/apacheds-all-2.0.0-M23.jar" sourcepath="M2_REPO/org/apache/directory/server/apacheds-all/2.0.0-M23/apacheds-all-2.0.0-M23-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.7.14/slf4j-api-1.7.14.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.7.14/slf4j-api-1.7.14-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/Users/krishdey/.m2/repository/org/slf4j/slf4j-api/1.7.14/slf4j-api-1.7.14-javadoc.jar!/"/>
@@ -16,6 +17,5 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/krishdey/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/apacheds-service-2.0.0-M23.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

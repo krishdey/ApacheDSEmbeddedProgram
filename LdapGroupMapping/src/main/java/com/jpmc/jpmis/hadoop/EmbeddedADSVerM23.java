@@ -41,7 +41,7 @@ import org.apache.directory.server.protocol.shared.transport.TcpTransport;
  * @author <a>krishdey</a>
  * @version $Rev$, $Date$
  */
-public class EmbeddedADSVerM22 {
+public class EmbeddedADSVerM23 {
   /** The directory service */
   private DirectoryService directoryService;
 
@@ -186,7 +186,7 @@ public class EmbeddedADSVerM22 {
    *
    * @throws Exception If something went wrong
    */
-  public EmbeddedADSVerM22() throws Exception {
+  public EmbeddedADSVerM23() throws Exception {
     try {
       String typeName = System.getProperty("apacheds.partition.factory");
 
@@ -246,7 +246,7 @@ public class EmbeddedADSVerM22 {
     try {
 
       // Create the server
-      EmbeddedADSVerM22 ads = new EmbeddedADSVerM22();
+      EmbeddedADSVerM23 ads = new EmbeddedADSVerM23();
       ads.addJpmisPartition();
       ads.startServer();
 
