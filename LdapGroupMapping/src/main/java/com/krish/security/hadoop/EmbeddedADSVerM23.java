@@ -3,9 +3,13 @@ package com.krish.security.hadoop;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
+import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.message.ModifyRequest;
+import org.apache.directory.api.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.schema.LdapComparator;
 import org.apache.directory.api.ldap.model.schema.SchemaManager;
@@ -16,6 +20,7 @@ import org.apache.directory.api.ldap.schema.extractor.SchemaLdifExtractor;
 import org.apache.directory.api.ldap.schema.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.api.ldap.schema.loader.LdifSchemaLoader;
 import org.apache.directory.api.ldap.schema.manager.impl.DefaultSchemaManager;
+import org.apache.directory.api.util.DateUtils;
 import org.apache.directory.api.util.FileUtils;
 import org.apache.directory.api.util.exception.Exceptions;
 import org.apache.directory.server.constants.ServerDNConstants;
@@ -218,7 +223,7 @@ public class EmbeddedADSVerM23 {
     server.start();
   }
 
-  //Add jpmis partition
+  // Add jpmis partition
   private void addJpmisPartition() throws Exception {
     Partition jpmisPartition =
         partitionFactory.createPartition(directoryService.getSchemaManager(), directoryService
@@ -232,9 +237,106 @@ public class EmbeddedADSVerM23 {
     Dn suffixDn = new Dn(directoryService.getSchemaManager(), "dc=jpmis,dc=com");
 
     Entry jpmisEntry = directoryService.newEntry(suffixDn);
-    jpmisEntry.add( "objectClass", "top", "domain", "extensibleObject");
+    jpmisEntry.add("objectClass", "top", "domain", "extensibleObject");
     directoryService.getAdminSession().add(jpmisEntry);
 
+    // Add OU=Groups
+    Dn groupDn = new Dn(directoryService.getSchemaManager(), "ou=groups,dc=jpmis,dc=com");
+
+    Entry groupEntry = new DefaultEntry(directoryService.getSchemaManager(), groupDn);
+
+    groupEntry.put(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.TOP_OC,
+        SchemaConstants.ORGANIZATIONAL_UNIT_OC);
+
+    groupEntry.put(SchemaConstants.OU_AT, "groups");
+    groupEntry.put(SchemaConstants.CREATORS_NAME_AT, ServerDNConstants.ADMIN_SYSTEM_DN_NORMALIZED);
+    groupEntry.put(SchemaConstants.CREATE_TIMESTAMP_AT, DateUtils.getGeneralizedTime());
+    groupEntry.add(SchemaConstants.ENTRY_UUID_AT, UUID.randomUUID().toString());
+
+    directoryService.getAdminSession().add(groupEntry);
+
+    Dn userDn = new Dn(directoryService.getSchemaManager(), "ou=users,dc=jpmis,dc=com");
+
+    Entry usersEntry = new DefaultEntry(directoryService.getSchemaManager(), userDn);
+
+    usersEntry.put(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.TOP_OC,
+        SchemaConstants.ORGANIZATIONAL_UNIT_OC);
+
+    usersEntry.put(SchemaConstants.OU_AT, "users");
+    usersEntry.put(SchemaConstants.CREATORS_NAME_AT, ServerDNConstants.ADMIN_SYSTEM_DN_NORMALIZED);
+    usersEntry.put(SchemaConstants.CREATE_TIMESTAMP_AT, DateUtils.getGeneralizedTime());
+    usersEntry.add(SchemaConstants.ENTRY_UUID_AT, UUID.randomUUID().toString());
+
+    directoryService.getAdminSession().add(usersEntry);
+  }
+
+  /**
+   * Add User
+   *
+   * @param uid
+   * @param password
+   * @return
+   * @throws Exception
+   */
+  public Dn createUser(String uid, String password) throws Exception {
+    Entry entry = new DefaultEntry(
+          //@formatter:off
+          directoryService.getSchemaManager(),
+          "uid=" + uid + ",ou=users,dc=jpmis,dc=com",
+          "uid", uid,
+          "objectClass: top",
+          "objectClass: person",
+          "objectClass: organizationalPerson",
+          "objectClass: inetOrgPerson",
+          "sn", uid,
+          "cn", uid,
+          "userPassword", password );
+          //@formatter:on
+    directoryService.getAdminSession().add(entry);
+
+    return entry.getDn();
+  }
+
+  /**
+   * Creates a simple groupOfUniqueNames under the ou=groups,dc=jpmis,dc=com
+   * container. The admin user is always a member of this newly created group.
+   *
+   * @param groupName the name of the cgroup to create
+   * @return the Dn of the group as a Name object
+   * @throws Exception if the group cannot be created
+   */
+  public Dn createGroup(String groupName) throws Exception {
+    Dn groupDn = new Dn("cn=" + groupName + ",ou=groups,dc=jpmis,dc=com");
+
+    Entry entry = new DefaultEntry(
+          //@formatter:off
+          directoryService.getSchemaManager(),
+          "cn=" + groupName + ",ou=groups,dc=jpmis,dc=com",
+          "objectClass: top",
+          "objectClass: groupOfUniqueNames",
+          "uniqueMember: uid=user, ou=system",
+          "cn", groupName );
+          //@formatter:on
+    directoryService.getAdminSession().add(entry);
+
+    return groupDn;
+  }
+
+  /**
+   * Adds an existing user under ou=users,dc=jpmis,dc=com to an existing group
+   * under the ou=groups,dc=jpmis,dc=com container.
+   *
+   * @param userUid the uid of the user to add to the group
+   * @param groupCn the cn of the group to add the user to
+   * @throws Exception if the group does not exist
+   */
+  public void addUserToGroup(String userUid, String groupCn) throws Exception {
+
+    ModifyRequest modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + groupCn
+        + ",ou=groups,dc=jpmis,dc=com"));
+    modReq.add("uniqueMember", "uid=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
   }
 
   /**
@@ -249,7 +351,10 @@ public class EmbeddedADSVerM23 {
       EmbeddedADSVerM23 ads = new EmbeddedADSVerM23();
       ads.addJpmisPartition();
       ads.startServer();
-
+      // For testing
+      ads.createGroup("ND-POC-ENG");
+      ads.createUser("krish", "krish");
+      ads.addUserToGroup("krish", "ND-POC-ENG");
     } catch (Exception e) {
       // Ok, we have something wrong going on ...
       e.printStackTrace();

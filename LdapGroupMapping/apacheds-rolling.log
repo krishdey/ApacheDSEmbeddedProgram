@@ -16,3 +16,84 @@
 [00:59:40] ERROR [org.apache.directory.server.core.schema.SchemaInterceptor] - ERR_60 Entry ou=groups,dc=jpmis,dc=com does not contain a STRUCTURAL ObjectClass
 [01:01:04] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
 [01:01:04] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[04:33:56] WARN [org.apache.mina.core.service.IoProcessor] - Create a new selector. Selected is 0, delta = 76
+[13:42:47] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[13:42:47] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[20:15:15] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[20:15:15] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[20:15:15] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'top' already exists in the attribute (objectClass)
+[20:15:15] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'domain' already exists in the attribute (objectClass)
+[20:15:15] WARN [org.apache.directory.api.ldap.model.entry.DefaultAttribute] - ERR_04486_VALUE_ALREADY_EXISTS The value 'extensibleObject' already exists in the attribute (objectClass)
+[20:15:15] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'ou=groups' is not present in the entry
+[20:15:15] WARN [org.apache.directory.server.core.referral.ReferralInterceptor] - could not find objectClass attribute in entry: Entry
+    dn[n]: ou=groups,dc=jpmis,dc=com
+
+    ou: groups
+
+[20:15:15] ERROR [org.apache.directory.server.core.schema.SchemaInterceptor] - ERR_60 Entry ou=groups,dc=jpmis,dc=com does not contain a STRUCTURAL ObjectClass
+[20:21:45] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[20:21:46] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[20:23:18] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[20:23:18] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[20:26:03] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[20:26:39] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[20:26:39] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:31:54] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:31:54] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:31:55] ERROR [org.apache.directory.server.ldap.LdapServer] - ERR_171 Failed to bind an LDAP service (10,389) to the service registry.
+java.io.IOException: Error while binding on 0.0.0.0/0.0.0.0:10389
+original message : Address already in use
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:238)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:51)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.registerHandles(AbstractPollingIoAcceptor.java:585)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.access$400(AbstractPollingIoAcceptor.java:71)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:459)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+[21:32:23] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:32:23] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:33:24] ERROR [org.apache.directory.api.ldap.codec.actions.bindRequest.StoreName] - Incorrect DN given : krish (0x6B 0x72 0x69 0x73 0x68 ) is invalid : ERR_04202 A value is missing on some RDN
+[21:39:24] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:39:24] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:39:53] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:39:53] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:39:53] ERROR [org.apache.directory.server.ldap.LdapServer] - ERR_171 Failed to bind an LDAP service (10,389) to the service registry.
+java.io.IOException: Error while binding on 0.0.0.0/0.0.0.0:10389
+original message : Address already in use
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:238)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:51)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.registerHandles(AbstractPollingIoAcceptor.java:585)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.access$400(AbstractPollingIoAcceptor.java:71)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:459)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+[21:40:16] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:40:17] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:44:28] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:44:28] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:45:11] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:45:11] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:45:11] ERROR [org.apache.directory.server.ldap.LdapServer] - ERR_171 Failed to bind an LDAP service (10,389) to the service registry.
+java.io.IOException: Error while binding on 0.0.0.0/0.0.0.0:10389
+original message : Address already in use
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:238)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.open(NioSocketAcceptor.java:51)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.registerHandles(AbstractPollingIoAcceptor.java:585)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor.access$400(AbstractPollingIoAcceptor.java:71)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:459)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+[21:46:53] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:46:53] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:51:36] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:51:36] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[21:58:07] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[21:58:07] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[22:22:00] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[22:22:00] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
