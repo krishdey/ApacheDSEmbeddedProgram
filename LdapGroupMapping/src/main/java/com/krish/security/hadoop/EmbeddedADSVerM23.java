@@ -2,14 +2,18 @@ package com.krish.security.hadoop;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicy;
+import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicyImpl;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.message.ModifyRequest;
 import org.apache.directory.api.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.api.ldap.model.message.ModifyResponse;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.schema.LdapComparator;
 import org.apache.directory.api.ldap.model.schema.SchemaManager;
@@ -37,7 +41,10 @@ import org.apache.directory.server.core.partition.ldif.LdifPartition;
 import org.apache.directory.server.core.shared.DefaultDnFactory;
 import org.apache.directory.server.i18n.I18n;
 import org.apache.directory.server.ldap.LdapServer;
+import org.apache.directory.server.protocol.shared.store.LdifFileLoader;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple example exposing how to embed Apache Directory Server version M23
@@ -47,6 +54,12 @@ import org.apache.directory.server.protocol.shared.transport.TcpTransport;
  * @version $Rev$, $Date$
  */
 public class EmbeddedADSVerM23 {
+
+  /**
+   * the log for this class
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(EmbeddedADSVerM23.class);
+
   /** The directory service */
   private DirectoryService directoryService;
 
@@ -129,6 +142,17 @@ public class EmbeddedADSVerM23 {
     }
   }
 
+  private void loadJpmisSchema() {
+
+    URL url = getClass().getResource("/krish.schema");
+    String file = url.getFile();
+
+    LdifFileLoader loader = new LdifFileLoader(directoryService.getAdminSession(), file);
+    int count = loader.execute();
+    LOG.info("Krish schema has been loaded with count " + count);
+
+  }
+
   /**
    * Initialize the server. It creates the partition, adds the index, and
    * injects the context entries for the created partitions.
@@ -208,6 +232,10 @@ public class EmbeddedADSVerM23 {
       throw new RuntimeException(e);
     }
     initDirectoryService();
+
+    // Add JPMIS related attributes to schemaManager
+    loadJpmisSchema();
+
   }
 
   /**
@@ -284,13 +312,14 @@ public class EmbeddedADSVerM23 {
           directoryService.getSchemaManager(),
           "uid=" + uid + ",ou=users,dc=jpmis,dc=com",
           "uid", uid,
-          "objectClass: top",
+          "objectClass: user",
           "objectClass: person",
           "objectClass: organizationalPerson",
           "objectClass: inetOrgPerson",
           "sn", uid,
           "cn", uid,
-          "userPassword", password );
+          "sAMAccountName",uid,
+          "userPassword", password);
           //@formatter:on
     directoryService.getAdminSession().add(entry);
 
@@ -314,7 +343,9 @@ public class EmbeddedADSVerM23 {
           "cn=" + groupName + ",ou=groups,dc=jpmis,dc=com",
           "objectClass: top",
           "objectClass: groupOfUniqueNames",
-          "uniqueMember: uid=user, ou=system",
+          "objectClass: group",
+          "uniqueMember: uid=admin, ou=system",
+          "member: uid=admin, ou=system",
           "cn", groupName );
           //@formatter:on
     directoryService.getAdminSession().add(entry);
@@ -335,8 +366,38 @@ public class EmbeddedADSVerM23 {
     ModifyRequest modReq = new ModifyRequestImpl();
     modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + groupCn
         + ",ou=groups,dc=jpmis,dc=com"));
-    modReq.add("uniqueMember", "uid=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    modReq.add("member", "uid=" + userUid + ",ou=users,dc=jpmis,dc=com");
     directoryService.getAdminSession().modify(modReq);
+
+    modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn(directoryService.getSchemaManager(), "uid=" + userUid
+        + ",ou=users,dc=jpmis,dc=com"));
+    modReq.add("memberOf", "cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
+  }
+
+  /**
+   * Removes a user from a group.
+   *
+   * @param userUid the Rdn attribute value of the user to remove from the group
+   * @param groupCn the Rdn attribute value of the group to have user removed
+   *          from
+   * @throws Exception if there are problems accessing the group
+   */
+  public void removeUserFromGroup(String userUid, String groupCn) throws Exception {
+    ModifyRequest modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com"));
+    modReq.remove("uniqueMember", "uid=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
+  }
+
+  public void changePassword(Dn userDn, String oldPassword, byte[] newPassword) throws Exception {
+    PasswordPolicy PP_REQ_CTRL = new PasswordPolicyImpl();
+    ModifyRequest modifyRequest = new ModifyRequestImpl();
+    modifyRequest.setName(userDn);
+    modifyRequest.replace(oldPassword, newPassword);
+    modifyRequest.addControl(PP_REQ_CTRL);
+    directoryService.getAdminSession().modify(modifyRequest);
   }
 
   /**
@@ -355,6 +416,7 @@ public class EmbeddedADSVerM23 {
       ads.createGroup("ND-POC-ENG");
       ads.createUser("krish", "krish");
       ads.addUserToGroup("krish", "ND-POC-ENG");
+      // ads.removeUserFromGroup("krish", "ND-POC-ENG");
     } catch (Exception e) {
       // Ok, we have something wrong going on ...
       e.printStackTrace();
