@@ -1,24 +1,4 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,149 +8,93 @@ import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Enumeration;
+import javax.naming.*;
+import javax.naming.ldap.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.classification.InterfaceAudience;
-import org.apache.hadoop.classification.InterfaceStability;
-import org.apache.hadoop.conf.Configurable;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.IOUtils;
-
-/**
- * An implementation of {@link GroupMappingServiceProvider} which
- * connects directly to an LDAP server for determining group membership.
- * 
- * This provider should be used only if it is necessary to map users to
- * groups that reside exclusively in an Active Directory or LDAP installation.
- * The common case for a Hadoop installation will be that LDAP users and groups
- * materialized on the Unix servers, and for an installation like that,
- * ShellBasedUnixGroupsMapping is preferred. However, in cases where
- * those users and groups aren't materialized in Unix, but need to be used for
- * access control, this class may be used to communicate directly with the LDAP
- * server.
- * 
- * It is important to note that resolving group mappings will incur network
- * traffic, and may cause degraded performance, although user-group mappings
- * will be cached via the infrastructure provided by {@link Groups}.
- * 
- * This implementation does not support configurable search limits. If a filter
- * is used for searching users or groups which returns more results than are
- * allowed by the server, an exception will be thrown.
- * 
- * The implementation also does not attempt to resolve group hierarchies. In
- * order to be considered a member of a group, the user must be an explicit
- * member in LDAP.
- */
-public class LdapGroupsMapping{
-  
-  public static final String LDAP_CONFIG_PREFIX = "hadoop.security.group.mapping.ldap";
-
+public class KrishADGroupTest{
+    
   /*
    * URL of the LDAP server
    */
-  public static final String LDAP_URL_KEY = LDAP_CONFIG_PREFIX + ".url";
+
   public static final String LDAP_URL_DEFAULT = "ldaps://DNJ600C85.NAEAST.AD.JPMORGANCHASE.COM:636";
 
-  /*
-   * Should SSL be used to connect to the server
-   */
-  public static final String LDAP_USE_SSL_KEY = LDAP_CONFIG_PREFIX + ".ssl";
-  public static final Boolean LDAP_USE_SSL_DEFAULT = false;
 
   /*
    * File path to the location of the SSL keystore to use
    */
-  public static final String LDAP_KEYSTORE_KEY = LDAP_CONFIG_PREFIX + ".ssl.keystore";
-  public static final String LDAP_KEYSTORE_DEFAULT = "";
 
-  /*
-   * Password for the keystore
-   */
-  public static final String LDAP_KEYSTORE_PASSWORD_KEY = LDAP_CONFIG_PREFIX + ".ssl.keystore.password";
-  public static final String LDAP_KEYSTORE_PASSWORD_DEFAULT = "";
-  
-  public static final String LDAP_KEYSTORE_PASSWORD_FILE_KEY = LDAP_KEYSTORE_PASSWORD_KEY + ".file";
-  public static final String LDAP_KEYSTORE_PASSWORD_FILE_DEFAULT = "";
+  public static final String LDAP_KEYSTORE_DEFAULT = "";
 
   /*
    * User to bind to the LDAP server with
    */
-  public static final String BIND_USER_KEY = LDAP_CONFIG_PREFIX + ".bind.user";
+
   public static final String BIND_USER_DEFAULT = "CN=ND-DATAREZ-BINDID1,OU=ND_DATAREZ_CDH,OU=JIS84920,OU=Hadoop Apps,OU=Service Accounts,DC=NAEAST,DC=AD,DC=JPMORGANCHASE,DC=com";
 
   /*
    * Password for the bind user
-   */
-  public static final String BIND_PASSWORD_KEY = LDAP_CONFIG_PREFIX + ".bind.password";
+  */
   public static final String BIND_PASSWORD_DEFAULT = "jpmis002@";
   
-  public static final String BIND_PASSWORD_FILE_KEY = BIND_PASSWORD_KEY + ".file";
-  public static final String BIND_PASSWORD_FILE_DEFAULT = "";
+
 
   /*
    * Base distinguished name to use for searches
    */
-  public static final String BASE_DN_KEY = LDAP_CONFIG_PREFIX + ".base";
+
   public static final String BASE_DN_DEFAULT = "DC=NAEAST,DC=AD,DC=JPMORGANCHASE,DC=com";
 
   /*
    * Any additional filters to apply when searching for users
    */
-  public static final String USER_SEARCH_FILTER_KEY = LDAP_CONFIG_PREFIX + ".search.filter.user";
+ 
   public static final String USER_SEARCH_FILTER_DEFAULT = "(&(objectClass=user)(sAMAccountName={0}))";
 
   /*
    * Any additional filters to apply when finding relevant groups
    */
-  public static final String GROUP_SEARCH_FILTER_KEY = LDAP_CONFIG_PREFIX + ".search.filter.group";
+ 
   public static final String GROUP_SEARCH_FILTER_DEFAULT = "(objectClass=group)";
 
   /*
    * LDAP attribute to use for determining group membership
    */
-  public static final String GROUP_MEMBERSHIP_ATTR_KEY = LDAP_CONFIG_PREFIX + ".search.attr.member";
+
   public static final String GROUP_MEMBERSHIP_ATTR_DEFAULT = "member";
 
   /*
    * LDAP attribute to use for identifying a group's name
    */
-  public static final String GROUP_NAME_ATTR_KEY = LDAP_CONFIG_PREFIX + ".search.attr.group.name";
-  public static final String GROUP_NAME_ATTR_DEFAULT = "cn";
+
+  public static final String GROUP_NAME_ATTR_DEFAULT = "cn";//"distinguishedName";
 
   /*
    * LDAP {@link SearchControls} attribute to set the time limit
    * for an invoked directory search. Prevents infinite wait cases.
    */
-  public static final String DIRECTORY_SEARCH_TIMEOUT =
-    LDAP_CONFIG_PREFIX + ".directory.search.timeout";
+ 
   public static final int DIRECTORY_SEARCH_TIMEOUT_DEFAULT = 10000; // 10s
 
-  private static final Log LOG = LogFactory.getLog(LdapGroupsMapping.class);
-
+  
   private static final SearchControls SEARCH_CONTROLS = new SearchControls();
   static {
     SEARCH_CONTROLS.setSearchScope(SearchControls.SUBTREE_SCOPE);
   }
 
   private DirContext ctx;
-  private Configuration conf;
   
-  private String ldapUrl;
-  private boolean useSsl;
-  private String keystore;
-  private String keystorePass;
-  private String bindUser;
-  private String bindPassword;
-  private String baseDN;
-  private String groupSearchFilter;
-  private String userSearchFilter;
-  private String groupMemberAttr;
-  private String groupNameAttr;
+ 
+  private static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
   public static int RECONNECT_RETRY_COUNT = 3;
   
@@ -184,6 +108,7 @@ public class LdapGroupsMapping{
    * @param user get groups for this user
    * @return list of groups for a given user
    */
+
   public synchronized List<String> getGroups(String user) throws IOException {
     List<String> emptyResults = new ArrayList<String>();
     /*
@@ -194,9 +119,10 @@ public class LdapGroupsMapping{
     try {
       return doGetGroups(user);
     } catch (CommunicationException e) {
-      LOG.warn("Connection is closed, will try to reconnect");
+      System.out.println("Connection is closed, will try to reconnect");
+      e.printStackTrace();
     } catch (NamingException e) {
-      LOG.warn("Exception trying to get groups for user " + user + ": "
+      System.out.println("Exception trying to get groups for user " + user + ": "
           + e.getMessage());
       return emptyResults;
     }
@@ -209,9 +135,9 @@ public class LdapGroupsMapping{
       try {
         return doGetGroups(user);
       } catch (CommunicationException e) {
-        LOG.warn("Connection being closed, reconnecting failed, retryCount = " + retryCount);
+        System.out.println("Connection being closed, reconnecting failed, retryCount = " + retryCount);
       } catch (NamingException e) {
-        LOG.warn("Exception trying to get groups for user " + user + ":"
+        System.out.println("Exception trying to get groups for user " + user + ":"
             + e.getMessage());
         return emptyResults;
       }
@@ -226,25 +152,42 @@ public class LdapGroupsMapping{
     DirContext ctx = getDirContext();
 
     // Search for the user. We'll only ever need to look at the first result
-    NamingEnumeration<SearchResult> results = ctx.search(baseDN,
-        userSearchFilter,
-        new Object[]{user},
-        SEARCH_CONTROLS);
-    if (results.hasMoreElements()) {
-      SearchResult result = results.nextElement();
-      String userDn = result.getNameInNamespace();
+SearchControls searchCtrls = new SearchControls(); searchCtrls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+String[] attributes = GROUP_MEMBERSHIP_ATTR_DEFAULT.split(",");
 
-      NamingEnumeration<SearchResult> groupResults =
-          ctx.search(baseDN,
-              "(&" + groupSearchFilter + "(" + groupMemberAttr + "={0}))",
-              new Object[]{userDn},
-              SEARCH_CONTROLS);
-      while (groupResults.hasMoreElements()) {
-        SearchResult groupResult = groupResults.nextElement();
-        Attribute groupName = groupResult.getAttributes().get(groupNameAttr);
-        groups.add(groupName.get().toString());
-      }
-    }
+searchCtrls.setReturningAttributes(attributes);
+
+//Change the NameOfGroup for the group name you would like to retrieve the members of.
+String filter = "(&" + GROUP_SEARCH_FILTER_DEFAULT + "(" + GROUP_NAME_ATTR_DEFAULT + "={0}))";
+//
+////use the context we created above and the filter to return all members of a group.
+NamingEnumeration values = ctx.search(BASE_DN_DEFAULT, filter, new Object[]{user} ,searchCtrls);
+//
+////Loop through the search results
+ while (values.hasMoreElements()) {
+ SearchResult sr = (SearchResult) values.next();  
+ Attributes attrs = sr.getAttributes();
+
+  if (null != attrs) {
+      for (NamingEnumeration ae = attrs.getAll(); ae.hasMoreElements();){
+       Attribute atr = (Attribute) ae.next();
+          String attributeID = atr.getID();
+             Enumeration vals = atr.getAll();
+
+                while (vals.hasMoreElements()) {
+                    String username = (String) vals.nextElement();
+                       LdapName ln = new LdapName(username);
+                          for(Rdn rdn : ln.getRdns()) {
+                            if(rdn.getType().equalsIgnoreCase("CN")) {
+                             System.out.println("CN is: " + rdn.getValue());
+                               break;
+                            }
+}
+                        
+                            }
+                             }
+                              } else {
+                                System.out.println("No members for groups found");  } }
 
     return groups;
   }
@@ -255,129 +198,42 @@ public class LdapGroupsMapping{
       Hashtable<String, String> env = new Hashtable<String, String>();
       env.put(Context.INITIAL_CONTEXT_FACTORY,
           com.sun.jndi.ldap.LdapCtxFactory.class.getName());
-      env.put(Context.PROVIDER_URL, ldapUrl);
+      env.put(Context.PROVIDER_URL, LDAP_URL_DEFAULT);
       env.put(Context.SECURITY_AUTHENTICATION, "simple");
 
-      // Set up SSL security, if necessary
-      if (useSsl) {
-        env.put(Context.SECURITY_PROTOCOL, "ssl");
-        System.setProperty("javax.net.ssl.keyStore", keystore);
-        System.setProperty("javax.net.ssl.keyStorePassword", keystorePass);
-      }
-
-      env.put(Context.SECURITY_PRINCIPAL, bindUser);
-      env.put(Context.SECURITY_CREDENTIALS, bindPassword);
-
+      env.put(Context.SECURITY_PRINCIPAL, BIND_USER_DEFAULT);
+      env.put(Context.SECURITY_CREDENTIALS, BIND_PASSWORD_DEFAULT);
       ctx = new InitialDirContext(env);
     }
 
     return ctx;
   }
   
-  /**
-   * Caches groups, no need to do that for this provider
-   */
-  public void cacheGroupsRefresh() throws IOException {
-    // does nothing in this provider of user to groups mapping
-  }
 
-  /** 
-   * Adds groups to cache, no need to do that for this provider
-   *
-   * @param groups unused
-   */
-  public void cacheGroupsAdd(List<String> groups) throws IOException {
-    // does nothing in this provider of user to groups mapping
-  }
+ public static void main(String[] args) {
 
-  public synchronized Configuration getConf() {
-    return conf;
-  }
+        MyBackgroudMethod thread = new MyBackgroudMethod();
+        //thread.setDaemon(true);
+        thread.start();
 
-  public synchronized void setConf(Configuration conf) {
-    ldapUrl = LDAP_URL_DEFAULT;
-    if (ldapUrl == null || ldapUrl.isEmpty()) {
-      throw new RuntimeException("LDAP URL is not configured");
+ }
+
+    private static class MyBackgroudMethod extends Thread {
+
+        @Override
+        public void run(){
+            while (true) {
+                System.out.println("Executed!");
+                try {
+                    KrishADGroupTest adTest = new KrishADGroupTest();
+                    System.out.println(dateFormat.format(new Date())+ " Groups are:: " + adTest.getGroups("ND-POC-ENGINEERS"));
+                    Thread.sleep(1*100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
-    
-    useSsl = LDAP_USE_SSL_DEFAULT;
-    keystore = conf.get(LDAP_KEYSTORE_KEY, LDAP_KEYSTORE_DEFAULT);
-    
-    keystorePass = getPassword(conf, LDAP_KEYSTORE_PASSWORD_KEY,
-        LDAP_KEYSTORE_PASSWORD_DEFAULT);
-    if (keystorePass.isEmpty()) {
-      keystorePass = extractPassword(conf.get(LDAP_KEYSTORE_PASSWORD_FILE_KEY,
-          LDAP_KEYSTORE_PASSWORD_FILE_DEFAULT));
-    }
-    
-    bindUser = BIND_USER_DEFAULT;
-    bindPassword = BIND_PASSWORD_DEFAULT;
-    if (bindPassword.isEmpty()) {
-      bindPassword = extractPassword(
-          conf.get(BIND_PASSWORD_FILE_KEY, BIND_PASSWORD_FILE_DEFAULT));
-    }
-    
-    baseDN = BASE_DN_DEFAULT;
-    groupSearchFilter = GROUP_SEARCH_FILTER_DEFAULT;
-    userSearchFilter = USER_SEARCH_FILTER_DEFAULT;
-    groupMemberAttr = GROUP_MEMBERSHIP_ATTR_DEFAULT;
-    groupNameAttr = GROUP_NAME_ATTR_DEFAULT;
-
-    int dirSearchTimeout =  DIRECTORY_SEARCH_TIMEOUT_DEFAULT;
-    SEARCH_CONTROLS.setTimeLimit(dirSearchTimeout);
-
-    this.conf = conf;
-  }
-
-  String getPassword(Configuration conf, String alias, String defaultPass) {
-    String password = null;
-    try {
-      char[] passchars = conf.getPassword(alias);
-      if (passchars != null) {
-        password = new String(passchars);
-      }
-      else {
-        password = defaultPass;
-      }
-    }
-    catch (IOException ioe) {
-      LOG.warn("Exception while trying to password for alias " + alias + ": "
-          + ioe.getMessage());
-    }
-    return password;
-  }
-
-  String extractPassword(String pwFile) {
-    if (pwFile.isEmpty()) {
-      // If there is no password file defined, we'll assume that we should do
-      // an anonymous bind
-      return "";
-    }
-    
-    Reader reader = null;
-    try {
-      StringBuilder password = new StringBuilder();
-      reader = new FileReader(pwFile);
-      int c = reader.read();
-      while (c > -1) {
-        password.append((char)c);
-        c = reader.read();
-      }
-      return password.toString().trim();
-    } catch (IOException ioe) {
-      throw new RuntimeException("Could not read password file: " + pwFile, ioe);
-    } finally {
-      IOUtils.cleanup(LOG, reader);
-    }
-  }
-  
-   public static void main(String[] args) throws Exception{
-
-        LdapGroupsMapping ldap = new LdapGroupsMapping();
-	ldap.setConf(new  Configuration());
-        System.out.println(ldap.getGroups("n574201"));
-
-   }
-
-
 }
+
