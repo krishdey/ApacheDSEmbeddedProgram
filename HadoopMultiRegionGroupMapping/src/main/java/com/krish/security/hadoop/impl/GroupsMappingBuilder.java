@@ -28,7 +28,7 @@ public class GroupsMappingBuilder {
   private List<MultiRegionGroups> providersList = new ArrayList<MultiRegionGroups>();
 
   static {
-    Configuration.addDefaultResource("hadoop-groupmapping.xml");
+    Configuration.addDefaultResource("hadoop-group-mapping.xml");
   }
 
   public void buildCompositeGroupMappingProviders() throws Exception {
