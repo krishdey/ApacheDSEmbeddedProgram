@@ -142,6 +142,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
   private String groupMemberAttr;
   private String groupNameAttr;
   private boolean useOneQuery;
+  private String providerName;
 
   static {
     SEARCH_CONTROLS.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -149,14 +150,16 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
 
   @Override
   public List<String> getUsers(String group) throws IOException {
+    LOG.info("Trying to get users for group " + group + " for " + providerName);
     List<String> emptyResults = new ArrayList<String>();
 
     try {
       return doGetUsersOfGroup(group);
     } catch (CommunicationException e) {
-      LOG.warn("Connection is closed, will try to reconnect");
+      LOG.warn("Connection is closed, will try to reconnect for " + providerName);
     } catch (NamingException e) {
-      LOG.warn("Exception trying to get groups for user " + group + ": " + e.getMessage());
+      LOG.warn("Exception trying to get groups for user " + group + ": " + "for " + providerName
+          + e.getMessage());
       return emptyResults;
     }
 
@@ -256,6 +259,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
 
   @Override
   public void setConf(Configuration conf) {
+    providerName = conf.get(GroupsMappingBuilder.MAPPING_PROVIDER_CONFIG_PREFIX);
     ldapUrl = conf.get(LDAP_URL_KEY, LDAP_URL_DEFAULT);
     if (ldapUrl == null || ldapUrl.isEmpty()) {
       throw new RuntimeException("LDAP URL is not configured");
@@ -273,7 +277,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
 
     bindUser = conf.get(BIND_USER_KEY, BIND_USER_DEFAULT);
     bindPassword = getPassword(conf, BIND_PASSWORD_KEY, BIND_PASSWORD_DEFAULT);
-    
+
     if (bindPassword.isEmpty()) {
       bindPassword = extractPassword(conf.get(BIND_PASSWORD_FILE_KEY, BIND_PASSWORD_FILE_DEFAULT));
     }
@@ -345,13 +349,13 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
       }
     }
   }
-  
-  //For testing
-  public static void main(String[] args) throws NamingException, IOException{
+
+  // For testing
+  public static void main(String[] args) throws NamingException, IOException {
     LdapGroupsMapping ldapGrpMapping = new LdapGroupsMapping();
     ldapGrpMapping.setConf(new Configuration());
     System.out.println(ldapGrpMapping.getUsers("ND-POC-ENG"));
-    
+
   }
 
 }

@@ -1,5 +1,7 @@
 package com.krish.ead.server;
 
+import org.apache.hadoop.fs.Path;
+
 import com.krish.directory.service.DefaultGroupMappingService;
 import com.krish.directory.service.EadSchemaService;
 
@@ -19,18 +21,23 @@ public class EADGroupMappingUpdater {
     if (eadGroupMappingUpdater == null) {
       eadGroupMappingUpdater = new EADGroupMappingUpdater();
       eadSchemaService = new EadSchemaService(service.getDirectoryService());
-      while(!service.getDirectoryService().isStarted()){
-        System.out.println("Waiting for thread to be started");
+
+      while (!service.getDirectoryService().isStarted()) {
+        System.out.println("Waiting for service to be started");
         Thread.sleep(1000);
       }
       eadSchemaService.loadTestUser();
+
+      groupMappingService = new DefaultGroupMappingService();
+      groupMappingService.buildGroupMapping(new Path(""));
+
     }
     return eadGroupMappingUpdater;
 
   }
 
   public void startUpdater() {
-    Thread thread = new Thread(new GroupMappingUpdaterThread());
+    Thread thread = new Thread(new GroupMappingUpdaterThread(60 * 1000, groupMappingService));
     thread.start();
   }
 
@@ -38,12 +45,17 @@ public class EADGroupMappingUpdater {
 
     private int interval;
 
+    public GroupMappingUpdaterThread(int interval, DefaultGroupMappingService grpMapService) {
+      this.interval = interval;
+    }
+
     @Override
     public void run() {
 
       while (true) {
-         try {
-          Thread.sleep(5*60*1000);
+        try {
+          groupMappingService.doSchemaUpdate();
+          Thread.sleep(interval);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();

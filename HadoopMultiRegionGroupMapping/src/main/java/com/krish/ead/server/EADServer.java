@@ -26,6 +26,10 @@ public class EADServer {
   /** The EAD service */
   private EmbeddedADSVerM23 service;
 
+  private static final String EAD_STARTUP_PORT = "ead.server.port";
+
+  private static int DEFAULT_STARTUP_PORT = 10389;
+
   /**
    * Takes a single argument, the path to the installation home, which contains
    * the configuration to load with server startup settings.
@@ -41,12 +45,15 @@ public class EADServer {
     Action action = (args.length == 2) ? Action.fromString(args[1]) : Action.START;
 
     EADServer instance = new EADServer();
+    int port =
+        System.getProperty(EAD_STARTUP_PORT).isEmpty() ? DEFAULT_STARTUP_PORT : Integer
+            .parseInt(System.getProperty(EAD_STARTUP_PORT));
 
     switch (action) {
     case START:
       // Starts the server
       LOG.debug("Starting runtime");
-      instance.start(instanceDirectory,10389);
+      instance.start(instanceDirectory, port);
       instance.startGroupMappingUpdater();
 
       break;
@@ -214,10 +221,10 @@ public class EADServer {
   public EmbeddedADSVerM23 getEADService() {
     return service;
   }
-  
-  private void startGroupMappingUpdater() throws Exception{
+
+  private void startGroupMappingUpdater() throws Exception {
     EADGroupMappingUpdater.getEADGroupMappingUpdaterInstance(getEADService());
-    
+
   }
 
 }

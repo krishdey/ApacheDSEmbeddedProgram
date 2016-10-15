@@ -67,6 +67,8 @@ public class GroupsMappingBuilder {
 
   private void addMappingProvider(String providerName, Class<?> providerClass) {
     Configuration newConf = prepareConf(providerName);
+    //This will be helpful for logging
+    newConf.set(MAPPING_PROVIDER_CONFIG_PREFIX, providerName);
     GroupMappingServiceProvider provider =
         (GroupMappingServiceProvider) ReflectionUtils.newInstance(providerClass, newConf);
 

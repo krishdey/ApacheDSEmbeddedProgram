@@ -1,5 +1,6 @@
 package com.krish.directory.service;
 
+import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.message.ModifyRequest;
@@ -43,7 +44,7 @@ public class EadSchemaService {
           "userPassword", password);
           //@formatter:on
     directoryService.getAdminSession().add(entry);
-    
+
     LOG.info("Created user in the EAD " + uid);
     return entry.getDn();
   }
@@ -113,10 +114,37 @@ public class EadSchemaService {
     directoryService.getAdminSession().modify(modReq);
   }
 
-  public void loadTestUser() throws Exception{
+  public boolean checkIfUserExist(String userUid) throws Exception {
+    Dn userDn = new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    return directoryService.getAdminSession().exists(userDn);
+  }
+
+  public boolean checkIfGroupExist(String groupCn) throws Exception {
+    Dn groupDn = new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
+    return directoryService.getAdminSession().exists(groupDn);
+  }
+  
+  /**
+   * 
+   * @param userUid
+   * @param groupCn
+   * @return
+   * @throws Exception
+   */
+  public boolean checkIfUserMemberOfGroup(String userUid, String groupCn) throws Exception {
+    Dn userDn = new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    Entry entry = directoryService.getAdminSession().lookup(userDn, "memberOf");
+    Attribute attr = entry.get("memberOf");
+    return attr.contains("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
+  }
+
+  /**
+   * @throws Exception
+   */
+  public void loadTestUser() throws Exception {
     createUser("krish", "krish");
     createGroup("ND-POC-ENG");
     addUserToGroup("krish", "ND-POC-ENG");
   }
-  
+
 }

@@ -15,6 +15,11 @@ public class DefaultGroupMappingService {
 
   private GroupsMappingBuilder groupServiceBuilder = new GroupsMappingBuilder();
   private static final Logger LOG = LoggerFactory.getLogger(DefaultGroupMappingService.class);
+  private EadSchemaService schemaService;
+
+  public void setEadSchemaService(EadSchemaService schemaService) {
+    this.schemaService = schemaService;
+  }
 
   public void buildGroupMapping(Path groupMappingXml) throws Exception {
     Configuration conf = new Configuration();
@@ -30,10 +35,11 @@ public class DefaultGroupMappingService {
       for (String group : groups) {
         try {
           List<String> users = groupMappingProvider.getUsers(group);
-          LOG.info("The users for the group " + group + " are " + users );
-          System.out.println("The users for the group " + group + " are " + users );
+          LOG.info("The users for the group " + group + " are " + users);
+          System.out.println("The users for the group " + group + " are " + users);
 
           // Call the update Schema here
+          doSchemaUpdateIfNecessary(group, users);
         } catch (IOException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -41,8 +47,37 @@ public class DefaultGroupMappingService {
       }
     }
   }
-  
-  public static void main(String[] args) throws Exception{
+
+  private void doSchemaUpdateIfNecessary(String group, List<String> users) {
+    // Check if the group Exist
+    try {
+      if(!schemaService.checkIfGroupExist(group)){
+        schemaService.createGroup(group);
+      }
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    
+    for (String user : users) {
+      try {
+        boolean ifUserExist = schemaService.checkIfUserExist(user);
+        if (!ifUserExist) {
+          schemaService.createUser(user, "password");
+        }
+        if (!schemaService.checkIfUserMemberOfGroup(user, group)) {
+          schemaService.addUserToGroup(user, group);
+        }
+
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+
+  }
+
+  public static void main(String[] args) throws Exception {
     DefaultGroupMappingService groupMappingService = new DefaultGroupMappingService();
     groupMappingService.buildGroupMapping(null);
     groupMappingService.doSchemaUpdate();
