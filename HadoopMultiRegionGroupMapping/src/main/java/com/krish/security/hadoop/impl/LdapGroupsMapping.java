@@ -36,7 +36,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
    * URL of the LDAP server
    */
   public static final String LDAP_URL_KEY = LDAP_CONFIG_PREFIX + ".url";
-  public static final String LDAP_URL_DEFAULT = "ldap://localhost:10389";
+  public static final String LDAP_URL_DEFAULT = "";
 
   /*
    * Should SSL be used to connect to the server
@@ -234,7 +234,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
       // Set up the initial environment for LDAP connectivity
       Hashtable<String, String> env = new Hashtable<String, String>();
       env.put(Context.INITIAL_CONTEXT_FACTORY, com.sun.jndi.ldap.LdapCtxFactory.class.getName());
-      env.put(Context.PROVIDER_URL, LDAP_URL_DEFAULT);
+      env.put(Context.PROVIDER_URL, ldapUrl);
       env.put(Context.SECURITY_AUTHENTICATION, "simple");
       // Set up SSL security, if necessary
       if (useSsl) {

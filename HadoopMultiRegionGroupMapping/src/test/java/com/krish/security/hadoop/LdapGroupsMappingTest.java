@@ -50,7 +50,7 @@ public class LdapGroupsMappingTest {
    * URL of the LDAP server
    */
   public static final String LDAP_URL_KEY = LDAP_CONFIG_PREFIX + ".url";
-  public static final String LDAP_URL_DEFAULT = "ldap://localhost:10389";
+  public static final String LDAP_URL_DEFAULT = "ldap://localhost:10689";
 
   /*
    * Should SSL be used to connect to the server

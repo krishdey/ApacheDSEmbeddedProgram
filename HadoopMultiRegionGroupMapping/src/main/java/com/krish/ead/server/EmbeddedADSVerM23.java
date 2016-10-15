@@ -330,7 +330,7 @@ public class EmbeddedADSVerM23 {
   public static void main(String[] args) throws Exception {
     InstanceLayout layout = new InstanceLayout("/tmp/krish");
     EmbeddedADSVerM23 ads = new EmbeddedADSVerM23();
-    ads.startServer(layout, 10389);
+    ads.startServer(layout, 10689);
     EadSchemaService eadSchemaService = new EadSchemaService(ads.getDirectoryService());
     eadSchemaService.createUser("krish", "krish");
     eadSchemaService.createGroup("ND-POC-ENG");

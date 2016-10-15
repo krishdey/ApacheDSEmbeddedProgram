@@ -1,5 +1,6 @@
 package com.krish.ead.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.directory.api.util.Network;
 import org.apache.directory.server.core.api.InstanceLayout;
 import org.slf4j.Logger;
@@ -30,6 +32,10 @@ public class EADServer {
 
   private static int DEFAULT_STARTUP_PORT = 10389;
 
+  private static String HADOOP_GROUP_MAPPING_XML = "hadoop-group-mapping";
+
+  private static String hadoopGroupMappingPath;
+
   /**
    * Takes a single argument, the path to the installation home, which contains
    * the configuration to load with server startup settings.
@@ -46,8 +52,13 @@ public class EADServer {
 
     EADServer instance = new EADServer();
     int port =
-        System.getProperty(EAD_STARTUP_PORT).isEmpty() ? DEFAULT_STARTUP_PORT : Integer
+        StringUtils.isEmpty(System.getProperty(EAD_STARTUP_PORT)) ? DEFAULT_STARTUP_PORT : Integer
             .parseInt(System.getProperty(EAD_STARTUP_PORT));
+
+    hadoopGroupMappingPath = System.getProperty(HADOOP_GROUP_MAPPING_XML);
+    if (!new File(hadoopGroupMappingPath).exists()) {
+      throw new RuntimeException("hadoop group mapping xml is not found");
+    }
 
     switch (action) {
     case START:
@@ -223,8 +234,8 @@ public class EADServer {
   }
 
   private void startGroupMappingUpdater() throws Exception {
-    EADGroupMappingUpdater.getEADGroupMappingUpdaterInstance(getEADService());
-
+    EADGroupMappingUpdater.getEADGroupMappingUpdaterInstance(getEADService(),
+        hadoopGroupMappingPath).startUpdater();
   }
 
 }

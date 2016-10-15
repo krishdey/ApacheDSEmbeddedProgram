@@ -51,7 +51,7 @@ public class DefaultGroupMappingService {
   private void doSchemaUpdateIfNecessary(String group, List<String> users) {
     // Check if the group Exist
     try {
-      if(!schemaService.checkIfGroupExist(group)){
+      if(!schemaService.checkIfGroupExist(group) && users.size()>0){
         schemaService.createGroup(group);
       }
     } catch (Exception e1) {

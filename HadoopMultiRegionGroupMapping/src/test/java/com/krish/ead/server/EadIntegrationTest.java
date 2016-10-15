@@ -31,7 +31,6 @@ public class EadIntegrationTest {
     assertTrue(eadSchemaService.checkIfUserExist("krish"));
     assertTrue(eadSchemaService.checkIfGroupExist("ND-POC-ENG"));
     assertTrue(eadSchemaService.checkIfUserMemberOfGroup("krish", "ND-POC-ENG"));
-
   }
 
   @AfterClass

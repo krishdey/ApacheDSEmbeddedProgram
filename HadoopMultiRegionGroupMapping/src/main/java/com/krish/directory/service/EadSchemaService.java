@@ -135,6 +135,9 @@ public class EadSchemaService {
     Dn userDn = new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
     Entry entry = directoryService.getAdminSession().lookup(userDn, "memberOf");
     Attribute attr = entry.get("memberOf");
+    if(attr == null){
+      return false;
+    }
     return attr.contains("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
   }
 
@@ -142,9 +145,9 @@ public class EadSchemaService {
    * @throws Exception
    */
   public void loadTestUser() throws Exception {
-    createUser("krish", "krish");
-    createGroup("ND-POC-ENG");
-    addUserToGroup("krish", "ND-POC-ENG");
+    createUser("krishdey", "krishdey");
+    createGroup("ND-DEY-ENG");
+    addUserToGroup("krishdey", "ND-DEY-ENG");
   }
 
 }

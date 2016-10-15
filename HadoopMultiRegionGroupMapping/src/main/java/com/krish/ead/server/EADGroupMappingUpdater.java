@@ -15,8 +15,8 @@ public class EADGroupMappingUpdater {
 
   }
 
-  public static EADGroupMappingUpdater getEADGroupMappingUpdaterInstance(EmbeddedADSVerM23 service)
-      throws Exception {
+  public static EADGroupMappingUpdater getEADGroupMappingUpdaterInstance(EmbeddedADSVerM23 service,
+      String hadoopGroupMappingPath) throws Exception {
 
     if (eadGroupMappingUpdater == null) {
       eadGroupMappingUpdater = new EADGroupMappingUpdater();
@@ -29,7 +29,9 @@ public class EADGroupMappingUpdater {
       eadSchemaService.loadTestUser();
 
       groupMappingService = new DefaultGroupMappingService();
-      groupMappingService.buildGroupMapping(new Path(""));
+      groupMappingService.setEadSchemaService(eadSchemaService);
+      
+      groupMappingService.buildGroupMapping(new Path(hadoopGroupMappingPath));
 
     }
     return eadGroupMappingUpdater;

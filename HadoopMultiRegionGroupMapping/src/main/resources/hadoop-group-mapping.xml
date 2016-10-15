@@ -32,7 +32,7 @@
 
 <property>
 	<name>hadoop.security.group.mapping.provider.NAEAST.ldap.url</name>
-	<value>ldap://localhost:10389</value>
+	<value>ldap://localhost:10689</value>
 	<description>
 	</description>
 </property>

@@ -548,3 +548,92 @@ original message : Address already in use
 [14:19:23] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
 [14:19:24] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
 [14:19:24] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:32:20] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:32:20] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:32:20] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:36:03] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:36:03] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:36:03] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:50:42] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:50:42] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:50:43] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:52:06] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:52:06] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:52:06] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:53:07] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:53:07] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:53:07] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:53:08] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[15:53:08] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[15:54:08] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[15:54:08] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[15:55:22] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:55:22] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:55:22] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:56:24] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:56:24] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:56:24] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:57:21] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:57:22] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:57:22] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:58:08] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[15:58:08] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[15:58:08] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[15:58:09] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[15:58:09] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:01:02] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:01:03] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:01:03] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:01:03] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:01:03] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:02:03] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:02:03] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:03:03] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:03:03] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:03:41] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:03:41] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:03:41] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:04:04] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:04:04] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:04:19] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:04:19] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:04:19] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:05:04] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:05:04] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:07:34] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:07:34] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:07:34] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:07:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:07:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:08:27] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:08:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:08:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:09:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:09:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:10:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:10:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:11:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:11:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:12:35] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:12:35] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:13:31] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:13:32] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:13:32] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:14:36] ERROR [org.apache.directory.server.core.authn.AbstractAuthenticator] - ERR_6 Authentication error : Attempt to lookup non-existant entry: cn=krish,ou=users,dc=jpmis,dc=com
+[16:15:08] WARN [com.krish.security.hadoop.impl.LdapGroupsMapping] - Exception trying to get groups for user ND-POC-ENG: for NAEAST[LDAP: error code 49 - INVALID_CREDENTIALS: Bind failed: ERR_229 Cannot authenticate user cn=krish,ou=users,dc=jpmis,dc=com]
+[16:19:32] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:19:32] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:19:32] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:20:44] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:20:44] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:20:44] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:21:48] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:21:48] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:21:48] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:24:21] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:24:21] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:24:21] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
+[16:26:19] WARN [org.apache.mina.core.service.IoProcessor] - Create a new selector. Selected is 0, delta = 1
+[16:27:02] WARN [org.apache.directory.server.core.DefaultDirectoryService] - You didn't change the admin password of directory service instance 'null'.  Please update the admin password as soon as possible to prevent a possible security breach.
+[16:27:02] WARN [org.apache.directory.api.ldap.model.schema.registries.DefaultSchemaObjectRegistry] - ERR_04271 ATTRIBUTE_TYPE with name member already registered!
+[16:27:02] WARN [org.apache.directory.server.core.normalization.NormalizationInterceptor] - The Rdn 'dc=jpmis' is not present in the entry
