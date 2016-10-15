@@ -1,4 +1,4 @@
-package com.krish.security.hadoop;
+package com.krish.directory.service;
 
 
 import java.io.IOException;

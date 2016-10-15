@@ -3,10 +3,11 @@ package com.krish.directory.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.krish.security.hadoop.GroupMappingServiceProvider;
 import com.krish.security.hadoop.impl.GroupsMappingBuilder;
 import com.krish.security.hadoop.impl.MultiRegionGroups;
 
@@ -15,9 +16,10 @@ public class DefaultGroupMappingService {
   private GroupsMappingBuilder groupServiceBuilder = new GroupsMappingBuilder();
   private static final Logger LOG = LoggerFactory.getLogger(DefaultGroupMappingService.class);
 
-  public void buildGroupMapping() throws Exception {
-    groupServiceBuilder.buildCompositeGroupMappingProviders();
-
+  public void buildGroupMapping(Path groupMappingXml) throws Exception {
+    Configuration conf = new Configuration();
+    conf.addResource(groupMappingXml);
+    groupServiceBuilder.buildCompositeGroupMappingProviders(conf);
   }
 
   public void doSchemaUpdate() {
@@ -42,7 +44,7 @@ public class DefaultGroupMappingService {
   
   public static void main(String[] args) throws Exception{
     DefaultGroupMappingService groupMappingService = new DefaultGroupMappingService();
-    groupMappingService.buildGroupMapping();
+    groupMappingService.buildGroupMapping(null);
     groupMappingService.doSchemaUpdate();
   }
 }

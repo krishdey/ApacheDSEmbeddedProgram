@@ -1,0 +1,122 @@
+package com.krish.directory.service;
+
+import org.apache.directory.api.ldap.model.entry.DefaultEntry;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.message.ModifyRequest;
+import org.apache.directory.api.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.api.ldap.model.name.Dn;
+import org.apache.directory.server.core.api.DirectoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EadSchemaService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EadSchemaService.class);
+  private DirectoryService directoryService;
+
+  public EadSchemaService(DirectoryService directoryService) {
+    this.directoryService = directoryService;
+  }
+
+  /**
+   * Add User
+   * 
+   * @param uid
+   * @param password
+   * @return Dn
+   * @throws Exception
+   */
+  public Dn createUser(String uid, String password) throws Exception {
+
+    Entry entry = new DefaultEntry(
+          //@formatter:off
+          directoryService.getSchemaManager(),
+          "cn=" + uid + ",ou=users,dc=jpmis,dc=com",
+          "uid", uid,
+          "objectClass: user",
+          "objectClass: person",
+          "objectClass: organizationalPerson",
+          "objectClass: inetOrgPerson",
+          "sn", uid,
+          "cn", uid,
+          "sAMAccountName",uid,
+          "userPassword", password);
+          //@formatter:on
+    directoryService.getAdminSession().add(entry);
+    
+    LOG.info("Created user in the EAD " + uid);
+    return entry.getDn();
+  }
+
+  /**
+   * Creates a simple groupOfUniqueNames under the ou=groups,dc=jpmis,dc=com
+   * container. The admin user is always a member of this newly created group.
+   *
+   * @param groupName the name of the cgroup to create
+   * @return the Dn of the group as a Name object
+   * @throws Exception if the group cannot be created
+   */
+  public Dn createGroup(String groupName) throws Exception {
+    Dn groupDn = new Dn("cn=" + groupName + ",ou=groups,dc=jpmis,dc=com");
+
+    Entry entry = new DefaultEntry(
+          //@formatter:off
+          directoryService.getSchemaManager(),
+          "cn=" + groupName + ",ou=groups,dc=jpmis,dc=com",
+          "objectClass: top",
+          "objectClass: groupOfUniqueNames",
+          "objectClass: group",
+          "uniqueMember: uid=admin, ou=system",
+          "member: uid=admin, ou=system",
+          "cn", groupName );
+          //@formatter:on
+    directoryService.getAdminSession().add(entry);
+
+    return groupDn;
+  }
+
+  /**
+   * Adds an existing user under ou=users,dc=jpmis,dc=com to an existing group
+   * under the ou=groups,dc=jpmis,dc=com container.
+   *
+   * @param userUid the uid of the user to add to the group
+   * @param groupCn the cn of the group to add the user to
+   * @throws Exception if the group does not exist
+   */
+  public void addUserToGroup(String userUid, String groupCn) throws Exception {
+
+    ModifyRequest modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + groupCn
+        + ",ou=groups,dc=jpmis,dc=com"));
+    modReq.add("member", "cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
+
+    modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + userUid
+        + ",ou=users,dc=jpmis,dc=com"));
+    modReq.add("memberOf", "cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
+  }
+
+  /**
+   * Removes a user from a group.
+   *
+   * @param userUid the Rdn attribute value of the user to remove from the group
+   * @param groupCn the Rdn attribute value of the group to have user removed
+   *          from
+   * @throws Exception if there are problems accessing the group
+   */
+  public void removeUserFromGroup(String userUid, String groupCn) throws Exception {
+    ModifyRequest modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com"));
+    modReq.remove("member", "cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
+  }
+
+  public void loadTestUser() throws Exception{
+    createUser("krish", "krish");
+    createGroup("ND-POC-ENG");
+    addUserToGroup("krish", "ND-POC-ENG");
+  }
+  
+}

@@ -11,7 +11,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.krish.security.hadoop.GroupMappingServiceProvider;
+import com.krish.directory.service.GroupMappingServiceProvider;
 
 public class GroupsMappingBuilder {
 
@@ -31,8 +31,8 @@ public class GroupsMappingBuilder {
     Configuration.addDefaultResource("hadoop-group-mapping.xml");
   }
 
-  public void buildCompositeGroupMappingProviders() throws Exception {
-    conf = new Configuration();
+  public void buildCompositeGroupMappingProviders(Configuration conf) throws Exception {
+    this.conf = conf;
     loadMappingProviders();
   }
 
@@ -42,7 +42,6 @@ public class GroupsMappingBuilder {
 
   public synchronized void setConf(Configuration conf) throws Exception {
     this.conf = conf;
-    loadMappingProviders();
   }
 
   public Configuration getConf() {

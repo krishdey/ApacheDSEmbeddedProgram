@@ -78,7 +78,7 @@ public class LdapGroupsMappingTest {
    * User to bind to the LDAP server with
    */
   public static final String BIND_USER_KEY = LDAP_CONFIG_PREFIX + ".bind.user";
-  public static final String BIND_USER_DEFAULT = "uid=krish,ou=users,dc=jpmis,dc=com";
+  public static final String BIND_USER_DEFAULT = "cn=krish,ou=users,dc=jpmis,dc=com";
 
   /*
    * Password for the bind user

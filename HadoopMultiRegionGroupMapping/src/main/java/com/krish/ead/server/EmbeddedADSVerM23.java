@@ -1,11 +1,12 @@
-package com.krish.directory.service;
+package com.krish.ead.server;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicy;
 import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicyImpl;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
@@ -44,6 +45,8 @@ import org.apache.directory.server.protocol.shared.store.LdifFileLoader;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.krish.directory.service.EadSchemaService;
 
 /**
  * A simple example exposing how to embed Apache Directory Server version M23
@@ -141,12 +144,17 @@ public class EmbeddedADSVerM23 {
     }
   }
 
-  private void loadJpmisSchema() {
+  private void loadJpmisSchema() throws IOException {
 
-    URL url = getClass().getResource("/krish.schema");
-    String file = url.getFile();
+    String ldifData = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("krish.schema"));
+    
+    File ldifFile = File.createTempFile("ldif", ".tmp");
+    ldifFile.deleteOnExit();
+    
+    FileOutputStream out = new FileOutputStream(ldifFile);
+    IOUtils.write(ldifData, out);
 
-    LdifFileLoader loader = new LdifFileLoader(directoryService.getAdminSession(), file);
+    LdifFileLoader loader = new LdifFileLoader(directoryService.getAdminSession(), ldifFile.getAbsolutePath());
     int count = loader.execute();
     LOG.info("Krish schema has been loaded with count " + count);
 
@@ -159,10 +167,10 @@ public class EmbeddedADSVerM23 {
    * @param workDir the directory to be used for storing the data
    * @throws Exception if there were some problems while initializing the system
    */
-  private void initDirectoryService() throws Exception {
+  private void initDirectoryService(InstanceLayout layout) throws Exception {
     // Initialize the LDAP service
     directoryService = new DefaultDirectoryService();
-    buildInstanceDirectory("krish");
+    buildInstanceDirectory(layout);
 
     CacheService cacheService = new CacheService();
     cacheService.initialize(directoryService.getInstanceLayout(), "krish");
@@ -186,14 +194,7 @@ public class EmbeddedADSVerM23 {
   /**
    * Build the working directory
    */
-  private void buildInstanceDirectory(String name) throws IOException {
-    String instanceDirectory = System.getProperty("workingDirectory");
-
-    if (instanceDirectory == null) {
-      instanceDirectory = System.getProperty("java.io.tmpdir") + "/server-work-" + name;
-    }
-
-    InstanceLayout instanceLayout = new InstanceLayout(instanceDirectory);
+  private void buildInstanceDirectory(InstanceLayout instanceLayout) throws IOException {
 
     if (instanceLayout.getInstanceDirectory().exists()) {
       try {
@@ -206,49 +207,6 @@ public class EmbeddedADSVerM23 {
     }
 
     directoryService.setInstanceLayout(instanceLayout);
-  }
-
-  /**
-   * Creates a new instance of EmbeddedADS. It initializes the directory
-   * service.
-   *
-   * @throws Exception If something went wrong
-   */
-  public EmbeddedADSVerM23() throws Exception {
-    try {
-      String typeName = System.getProperty("apacheds.partition.factory");
-
-      if (typeName != null) {
-        @SuppressWarnings("unchecked")
-        Class<? extends PartitionFactory> type =
-            (Class<? extends PartitionFactory>) Class.forName(typeName);
-        partitionFactory = type.newInstance();
-      } else {
-        partitionFactory = new JdbmPartitionFactory();
-      }
-    } catch (Exception e) {
-      System.out.println("Error instantiating custom partiton factory" + e);
-      throw new RuntimeException(e);
-    }
-    initDirectoryService();
-
-    // Add JPMIS related attributes to schemaManager
-    loadJpmisSchema();
-    changePassword(new Dn("uid=admin, ou=system"), "secret", "krish".getBytes());
-
-  }
-
-  /**
-   * starts the LdapServer
-   *
-   * @throws Exception
-   */
-  public void startServer() throws Exception {
-    server = new LdapServer();
-    int serverPort = 10389;
-    server.setTransports(new TcpTransport(serverPort));
-    server.setDirectoryService(directoryService);
-    server.start();
   }
 
   // Add jpmis partition
@@ -299,99 +257,58 @@ public class EmbeddedADSVerM23 {
   }
 
   /**
-   * Add User
+   * Creates a new instance of EmbeddedADS. It initializes the directory
+   * service.
    *
-   * @param uid
-   * @param password
-   * @return
+   * @throws Exception If something went wrong
+   */
+  public EmbeddedADSVerM23() throws Exception {
+    try {
+      String typeName = System.getProperty("apacheds.partition.factory");
+
+      if (typeName != null) {
+        @SuppressWarnings("unchecked")
+        Class<? extends PartitionFactory> type =
+            (Class<? extends PartitionFactory>) Class.forName(typeName);
+        partitionFactory = type.newInstance();
+      } else {
+        partitionFactory = new JdbmPartitionFactory();
+      }
+    } catch (Exception e) {
+      System.out.println("Error instantiating custom partiton factory" + e);
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  /**
+   * starts the LdapServer
+   *
    * @throws Exception
    */
-  public Dn createUser(String uid, String password) throws Exception {
-    Entry entry = new DefaultEntry(
-          //@formatter:off
-          directoryService.getSchemaManager(),
-          "cn=" + uid + ",ou=users,dc=jpmis,dc=com",
-          "uid", uid,
-          "objectClass: user",
-          "objectClass: person",
-          "objectClass: organizationalPerson",
-          "objectClass: inetOrgPerson",
-          "sn", uid,
-          "cn", uid,
-          "sAMAccountName",uid,
-          "userPassword", password);
-          //@formatter:on
-    directoryService.getAdminSession().add(entry);
-
-    return entry.getDn();
+  public void startServer(InstanceLayout layout, int serverPort) throws Exception {
+    initDirectoryService(layout);
+    // Add JPMIS related attributes to schemaManager
+    loadJpmisSchema();
+    changePassword(new Dn("uid=admin, ou=system"), "secret", "krish".getBytes());
+    addJpmisPartition();
+    server = new LdapServer();
+    server.setTransports(new TcpTransport(serverPort));
+    server.setDirectoryService(directoryService);
+    server.start();
   }
 
   /**
-   * Creates a simple groupOfUniqueNames under the ou=groups,dc=jpmis,dc=com
-   * container. The admin user is always a member of this newly created group.
-   *
-   * @param groupName the name of the cgroup to create
-   * @return the Dn of the group as a Name object
-   * @throws Exception if the group cannot be created
+   * Stop the server and services
+   * 
+   * @throws Exception
    */
-  public Dn createGroup(String groupName) throws Exception {
-    Dn groupDn = new Dn("cn=" + groupName + ",ou=groups,dc=jpmis,dc=com");
-
-    Entry entry = new DefaultEntry(
-          //@formatter:off
-          directoryService.getSchemaManager(),
-          "cn=" + groupName + ",ou=groups,dc=jpmis,dc=com",
-          "objectClass: top",
-          "objectClass: groupOfUniqueNames",
-          "objectClass: group",
-          "uniqueMember: uid=admin, ou=system",
-          "member: uid=admin, ou=system",
-          "cn", groupName );
-          //@formatter:on
-    directoryService.getAdminSession().add(entry);
-
-    return groupDn;
+  public void stopServer() throws Exception {
+    directoryService.shutdown();
+    server.stop();
   }
 
-  /**
-   * Adds an existing user under ou=users,dc=jpmis,dc=com to an existing group
-   * under the ou=groups,dc=jpmis,dc=com container.
-   *
-   * @param userUid the uid of the user to add to the group
-   * @param groupCn the cn of the group to add the user to
-   * @throws Exception if the group does not exist
-   */
-  public void addUserToGroup(String userUid, String groupCn) throws Exception {
-
-    ModifyRequest modReq = new ModifyRequestImpl();
-    modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + groupCn
-        + ",ou=groups,dc=jpmis,dc=com"));
-    modReq.add("member", "cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
-    directoryService.getAdminSession().modify(modReq);
-
-    modReq = new ModifyRequestImpl();
-    modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + userUid
-        + ",ou=users,dc=jpmis,dc=com"));
-    modReq.add("memberOf", "cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
-    directoryService.getAdminSession().modify(modReq);
-  }
-
-  /**
-   * Removes a user from a group.
-   *
-   * @param userUid the Rdn attribute value of the user to remove from the group
-   * @param groupCn the Rdn attribute value of the group to have user removed
-   *          from
-   * @throws Exception if there are problems accessing the group
-   */
-  public void removeUserFromGroup(String userUid, String groupCn) throws Exception {
-    ModifyRequest modReq = new ModifyRequestImpl();
-    modReq.setName(new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com"));
-    modReq.remove("uniqueMember", "cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
-    directoryService.getAdminSession().modify(modReq);
-  }
-
-  public void changePassword(Dn userDn, String oldPassword, byte[] newPassword) throws Exception {
+  private void changePassword(Dn userDn, String oldPassword, byte[] newPassword) throws Exception {
     PasswordPolicy PP_REQ_CTRL = new PasswordPolicyImpl();
     ModifyRequest modifyRequest = new ModifyRequestImpl();
     modifyRequest.setName(userDn);
@@ -400,26 +317,23 @@ public class EmbeddedADSVerM23 {
     directoryService.getAdminSession().modify(modifyRequest);
   }
 
-  /**
-   * Main class.
-   *
-   * @param args Not used.
-   */
-  public static void main(String[] args) {
-    try {
+  public DirectoryService getDirectoryService() {
+    return directoryService;
+  }
 
-      // Create the server
-      EmbeddedADSVerM23 ads = new EmbeddedADSVerM23();
-      ads.addJpmisPartition();
-      ads.startServer();
-      // For testing
-      ads.createGroup("ND-POC-ENG");
-      ads.createUser("krish", "krish");
-      ads.addUserToGroup("krish", "ND-POC-ENG");
-      // ads.removeUserFromGroup("krish", "ND-POC-ENG");
-    } catch (Exception e) {
-      // Ok, we have something wrong going on ...
-      e.printStackTrace();
-    }
+  /**
+   * 
+   * This is for testing purpose.  DO NOT REMOVE
+   * @param args
+   * @throws Exception
+   */
+  public static void main(String[] args) throws Exception {
+    InstanceLayout layout = new InstanceLayout("/tmp/krish");
+    EmbeddedADSVerM23 ads = new EmbeddedADSVerM23();
+    ads.startServer(layout, 10389);
+    EadSchemaService eadSchemaService = new EadSchemaService(ads.getDirectoryService());
+    eadSchemaService.createUser("krish", "krish");
+    eadSchemaService.createGroup("ND-POC-ENG");
+    eadSchemaService.addUserToGroup("krish", "ND-POC-ENG");
   }
 }

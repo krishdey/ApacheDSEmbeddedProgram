@@ -2,7 +2,7 @@ package com.krish.security.hadoop.impl;
 
 import java.util.List;
 
-import com.krish.security.hadoop.GroupMappingServiceProvider;
+import com.krish.directory.service.GroupMappingServiceProvider;
 
 
 public class MultiRegionGroups {
