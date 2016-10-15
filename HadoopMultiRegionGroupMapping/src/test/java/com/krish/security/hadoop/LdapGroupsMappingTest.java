@@ -37,10 +37,15 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.directory.server.core.api.DirectoryService;
 import org.apache.hadoop.conf.Configuration;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.krish.directory.service.EadSchemaService;
+import com.krish.ead.server.EADServer;
 
 public class LdapGroupsMappingTest {
 
@@ -50,7 +55,7 @@ public class LdapGroupsMappingTest {
    * URL of the LDAP server
    */
   public static final String LDAP_URL_KEY = LDAP_CONFIG_PREFIX + ".url";
-  public static final String LDAP_URL_DEFAULT = "ldap://localhost:10689";
+  public static final String LDAP_URL_DEFAULT = "ldap://localhost:10389";
 
   /*
    * Should SSL be used to connect to the server
@@ -346,9 +351,25 @@ public class LdapGroupsMappingTest {
     }
   }
 
+  static EADServer eadServer;
+  DirectoryService directoryService;
+  EadSchemaService eadSchemaService;
+
+  @Before
+  public void setUp() throws Exception {
+    eadServer = new EADServer();
+    eadServer.start("/tmp/krish", 10389);
+    directoryService = eadServer.getEADService().getDirectoryService();
+    eadSchemaService = new EadSchemaService(directoryService);
+
+  }
+
+  
   @Test
   public void testUserGroup() throws Exception {
-
+    eadSchemaService.createUser("krish", "krish");
+    eadSchemaService.createGroup("ND-POC-ENG");
+    eadSchemaService.addUserToGroup("krish", "ND-POC-ENG");
     LdapGroupsMappingTest ldap = new LdapGroupsMappingTest();
     ldap.setConf(new Configuration());
     System.out.println(ldap.getGroups("krish"));

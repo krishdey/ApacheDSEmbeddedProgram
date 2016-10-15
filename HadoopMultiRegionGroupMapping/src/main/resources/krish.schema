@@ -49,16 +49,6 @@ objectclass: organizationalUnit
 objectclass: top
 ou: attributetypes
 
-dn: m-oid=1.2.840.113556.1.4.224, ou=attributetypes, cn=microsoft, ou=schema
-objectclass: metaAttributeType
-objectclass: metaTop
-objectclass: top
-m-oid: 1.2.840.113556.1.4.224
-m-name: member
-m-equality: caseIgnoreMatch
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
-m-singleValue: FALSE
-
 dn: ou=objectclasses, cn=microsoft, ou=schema
 objectclass: organizationalUnit
 objectclass: top
@@ -72,4 +62,4 @@ m-oid: 1.2.840.113556.1.5.9
 m-name: group
 m-supObjectClass: top
 m-typeObjectClass: AUXILIARY
-m-must: member
+m-may: member

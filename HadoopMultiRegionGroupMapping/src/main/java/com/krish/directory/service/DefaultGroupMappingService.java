@@ -52,6 +52,7 @@ public class DefaultGroupMappingService {
     // Check if the group Exist
     try {
       if(!schemaService.checkIfGroupExist(group) && users.size()>0){
+        LOG.info("Created group " + group);
         schemaService.createGroup(group);
       }
     } catch (Exception e1) {

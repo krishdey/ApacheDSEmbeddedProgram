@@ -68,7 +68,6 @@ public class EadSchemaService {
           "objectClass: groupOfUniqueNames",
           "objectClass: group",
           "uniqueMember: uid=admin, ou=system",
-          "member: uid=admin, ou=system",
           "cn", groupName );
           //@formatter:on
     directoryService.getAdminSession().add(entry);

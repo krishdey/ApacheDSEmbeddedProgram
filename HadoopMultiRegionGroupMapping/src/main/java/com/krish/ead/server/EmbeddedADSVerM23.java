@@ -335,5 +335,11 @@ public class EmbeddedADSVerM23 {
     eadSchemaService.createUser("krish", "krish");
     eadSchemaService.createGroup("ND-POC-ENG");
     eadSchemaService.addUserToGroup("krish", "ND-POC-ENG");
+    
+    eadSchemaService.createUser("jim", "jim");
+    eadSchemaService.addUserToGroup("jim", "ND-POC-ENG");
+    
+    eadSchemaService.createUser("chris", "chris");
+    eadSchemaService.addUserToGroup("chris", "ND-POC-ENG");
   }
 }

@@ -156,7 +156,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
     try {
       return doGetUsersOfGroup(group);
     } catch (CommunicationException e) {
-      LOG.warn("Connection is closed, will try to reconnect for " + providerName);
+      LOG.warn("Connection is closed, will try to reconnect for " + providerName + " LDAP URL: " +ldapUrl);
     } catch (NamingException e) {
       LOG.warn("Exception trying to get groups for user " + group + ": " + "for " + providerName
           + e.getMessage());
@@ -165,8 +165,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
 
     int retryCount = 0;
     while (retryCount++ < RECONNECT_RETRY_COUNT) {
-      // reset ctx so that new DirContext can be created with new connection
-
+ 
       try {
         return doGetUsersOfGroup(group);
       } catch (CommunicationException e) {
@@ -175,6 +174,8 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
         LOG.warn("Exception trying to get groups for user " + group + ":" + e.getMessage());
         return emptyResults;
       }
+      // reset ctx so that new DirContext can be created with new connection
+      ctx =null;
     }
 
     return emptyResults;
@@ -258,7 +259,7 @@ public class LdapGroupsMapping implements GroupMappingServiceProvider, Configura
   }
 
   @Override
-  public void setConf(Configuration conf) {
+  public synchronized void setConf(Configuration conf) {
     providerName = conf.get(GroupsMappingBuilder.MAPPING_PROVIDER_CONFIG_PREFIX);
     ldapUrl = conf.get(LDAP_URL_KEY, LDAP_URL_DEFAULT);
     if (ldapUrl == null || ldapUrl.isEmpty()) {
