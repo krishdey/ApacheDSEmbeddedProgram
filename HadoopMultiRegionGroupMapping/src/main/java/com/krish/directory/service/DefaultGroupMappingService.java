@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 import com.krish.security.hadoop.impl.GroupsMappingBuilder;
 import com.krish.security.hadoop.impl.MultiRegionGroups;
 
-public class DefaultGroupMappingService {
+public class DefaultGroupMappingService implements GroupMappingService {
 
   private GroupsMappingBuilder groupServiceBuilder = new GroupsMappingBuilder();
   private static final Logger LOG = LoggerFactory.getLogger(DefaultGroupMappingService.class);
   private EadSchemaService schemaService;
 
+  @Override
   public void setEadSchemaService(EadSchemaService schemaService) {
     this.schemaService = schemaService;
   }
@@ -27,7 +28,10 @@ public class DefaultGroupMappingService {
     groupServiceBuilder.buildCompositeGroupMappingProviders(conf);
   }
 
+  @Override
   public void doSchemaUpdate() {
+    LOG.info("Going to update Schemas..");
+
     List<MultiRegionGroups> groupProviders = groupServiceBuilder.getProvidersList();
     for (MultiRegionGroups groupProvider : groupProviders) {
       List<String> groups = groupProvider.getGroups();
@@ -51,7 +55,7 @@ public class DefaultGroupMappingService {
   private void doSchemaUpdateIfNecessary(String group, List<String> users) {
     // Check if the group Exist
     try {
-      if(!schemaService.checkIfGroupExist(group) && users.size()>0){
+      if (!schemaService.checkIfGroupExist(group) && users.size() > 0) {
         LOG.info("Created group " + group);
         schemaService.createGroup(group);
       }
@@ -59,7 +63,7 @@ public class DefaultGroupMappingService {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
-    
+
     for (String user : users) {
       try {
         boolean ifUserExist = schemaService.checkIfUserExist(user);
@@ -76,11 +80,5 @@ public class DefaultGroupMappingService {
       }
     }
 
-  }
-
-  public static void main(String[] args) throws Exception {
-    DefaultGroupMappingService groupMappingService = new DefaultGroupMappingService();
-    groupMappingService.buildGroupMapping(null);
-    groupMappingService.doSchemaUpdate();
   }
 }

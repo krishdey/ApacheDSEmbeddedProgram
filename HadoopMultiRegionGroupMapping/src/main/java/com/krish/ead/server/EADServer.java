@@ -236,6 +236,7 @@ public class EADServer {
   private void startGroupMappingUpdater() throws Exception {
     EADGroupMappingUpdater.getEADGroupMappingUpdaterInstance(getEADService(),
         hadoopGroupMappingPath).startUpdater();
+    LOG.info("Providers updater started successfully ");
   }
 
 }

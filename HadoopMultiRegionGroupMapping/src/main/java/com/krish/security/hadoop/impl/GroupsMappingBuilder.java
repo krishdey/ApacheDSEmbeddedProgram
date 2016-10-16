@@ -49,6 +49,7 @@ public class GroupsMappingBuilder {
   }
 
   private void loadMappingProviders() throws ClassNotFoundException {
+    LOG.info("Loading mapping providers configuration");
     String[] providerNames = conf.getStrings(MAPPING_PROVIDERS_CONFIG_KEY, new String[] {});
 
     String providerKey;

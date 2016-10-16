@@ -28,7 +28,7 @@ public class EadSchemaService {
    * @throws Exception
    */
   public Dn createUser(String uid, String password) throws Exception {
-
+    LOG.info("Creating user with Cn: " + uid);
     Entry entry = new DefaultEntry(
           //@formatter:off
           directoryService.getSchemaManager(),
@@ -58,6 +58,8 @@ public class EadSchemaService {
    * @throws Exception if the group cannot be created
    */
   public Dn createGroup(String groupName) throws Exception {
+    LOG.info("Creating Group with : " + groupName);
+
     Dn groupDn = new Dn("cn=" + groupName + ",ou=groups,dc=jpmis,dc=com");
 
     Entry entry = new DefaultEntry(
@@ -84,6 +86,7 @@ public class EadSchemaService {
    * @throws Exception if the group does not exist
    */
   public void addUserToGroup(String userUid, String groupCn) throws Exception {
+    LOG.info("Adding user with Cn: " + userUid + " to group " + groupCn);
 
     ModifyRequest modReq = new ModifyRequestImpl();
     modReq.setName(new Dn(directoryService.getSchemaManager(), "cn=" + groupCn
@@ -122,7 +125,7 @@ public class EadSchemaService {
     Dn groupDn = new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
     return directoryService.getAdminSession().exists(groupDn);
   }
-  
+
   /**
    * 
    * @param userUid
@@ -134,7 +137,7 @@ public class EadSchemaService {
     Dn userDn = new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
     Entry entry = directoryService.getAdminSession().lookup(userDn, "memberOf");
     Attribute attr = entry.get("memberOf");
-    if(attr == null){
+    if (attr == null) {
       return false;
     }
     return attr.contains("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");

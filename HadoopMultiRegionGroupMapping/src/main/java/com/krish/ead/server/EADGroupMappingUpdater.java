@@ -1,16 +1,21 @@
 package com.krish.ead.server;
 
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.krish.directory.service.DefaultGroupMappingService;
 import com.krish.directory.service.EadSchemaService;
+import com.krish.directory.service.GroupMappingService;
 
 public class EADGroupMappingUpdater {
 
   static EADGroupMappingUpdater eadGroupMappingUpdater;
   static EadSchemaService eadSchemaService;
-  static DefaultGroupMappingService groupMappingService;
+  static GroupMappingService groupMappingService;
 
+  private static final Logger LOG = LoggerFactory.getLogger(EADGroupMappingUpdater.class);
+  
   private EADGroupMappingUpdater() {
 
   }
@@ -19,6 +24,7 @@ public class EADGroupMappingUpdater {
       String hadoopGroupMappingPath) throws Exception {
 
     if (eadGroupMappingUpdater == null) {
+      LOG.info("Initializing Updater class for Providers ....");
       eadGroupMappingUpdater = new EADGroupMappingUpdater();
       eadSchemaService = new EadSchemaService(service.getDirectoryService());
 
@@ -47,7 +53,7 @@ public class EADGroupMappingUpdater {
 
     private int interval;
 
-    public GroupMappingUpdaterThread(int interval, DefaultGroupMappingService grpMapService) {
+    public GroupMappingUpdaterThread(int interval, GroupMappingService grpMapService) {
       this.interval = interval;
     }
 
@@ -56,7 +62,9 @@ public class EADGroupMappingUpdater {
 
       while (true) {
         try {
+          LOG.info("Going to run schema update");
           groupMappingService.doSchemaUpdate();
+          LOG.info("Schema update finishded");
           Thread.sleep(interval);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
