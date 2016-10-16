@@ -18,6 +18,11 @@ import org.apache.directory.server.core.api.InstanceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * EAD Server
+ * @author krishdey
+ *
+ */
 public class EADServer {
   /** A logger for this class */
   private static final Logger LOG = LoggerFactory.getLogger(EADServer.class);

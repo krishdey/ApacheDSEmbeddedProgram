@@ -11,23 +11,37 @@ import org.slf4j.LoggerFactory;
 import com.krish.security.hadoop.impl.GroupsMappingBuilder;
 import com.krish.security.hadoop.impl.MultiRegionGroups;
 
+/**
+ * DefaultGroupMappingService class
+ * @author krishdey
+ *
+ */
 public class DefaultGroupMappingService implements GroupMappingService {
 
   private GroupsMappingBuilder groupServiceBuilder = new GroupsMappingBuilder();
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultGroupMappingService.class);
   private EadSchemaService schemaService;
+  
+  /**Logger for the class */
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultGroupMappingService.class);
+  
 
   @Override
   public void setEadSchemaService(EadSchemaService schemaService) {
     this.schemaService = schemaService;
   }
 
+  /**
+   * build group mapping
+   */
   public void buildGroupMapping(Path groupMappingXml) throws Exception {
     Configuration conf = new Configuration();
     conf.addResource(groupMappingXml);
     groupServiceBuilder.buildCompositeGroupMappingProviders(conf);
   }
 
+  /**
+   * do schema update
+   */
   @Override
   public void doSchemaUpdate() {
     LOG.info("Going to update Schemas..");
@@ -40,8 +54,6 @@ public class DefaultGroupMappingService implements GroupMappingService {
         try {
           List<String> users = groupMappingProvider.getUsers(group);
           LOG.info("The users for the group " + group + " are " + users);
-          System.out.println("The users for the group " + group + " are " + users);
-
           // Call the update Schema here
           doSchemaUpdateIfNecessary(group, users);
         } catch (IOException e) {

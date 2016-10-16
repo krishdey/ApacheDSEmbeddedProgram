@@ -8,7 +8,7 @@ import com.krish.directory.service.DefaultGroupMappingService;
 import com.krish.directory.service.EadSchemaService;
 import com.krish.directory.service.GroupMappingService;
 
-public class EADGroupMappingUpdater {
+public final class EADGroupMappingUpdater {
 
   static EADGroupMappingUpdater eadGroupMappingUpdater;
   static EadSchemaService eadSchemaService;

@@ -283,7 +283,6 @@ public class EmbeddedADSVerM23 {
 
   /**
    * starts the LdapServer
-   *
    * @throws Exception
    */
   public void startServer(InstanceLayout layout, int serverPort) throws Exception {
@@ -300,7 +299,6 @@ public class EmbeddedADSVerM23 {
 
   /**
    * Stop the server and services
-   * 
    * @throws Exception
    */
   public void stopServer() throws Exception {

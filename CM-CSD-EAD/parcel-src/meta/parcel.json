@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "name": "DATASTAX_CASSANDRA",
+  "name": "JPMISEAD",
   "version": "%VERSION%",
   "setActiveSymlink": true,
 
@@ -9,31 +9,31 @@
   "conflicts": "",
 
   "provides": [
-		"cassandra"
+		"jpmisead"
 	],
 
   "scripts": {
-    "defines": "cassandra_env.sh"
+    "defines": "ead_env.sh"
   },
 
   "packages": [],
 
   "components": [
-    { "name"       : "cassandra",
+    { "name"       : "jpmisead",
       "version"    : "%VERSION%"
     }
   ],
 
   "users": {
-    "cassandra": {
-      "longname"    : "Cassandra user",
-      "home"        : "/var/lib/cassandra",
+    "ead": {
+      "longname"    : "Ead user",
+      "home"        : "/var/lib/ead",
       "shell"       : "/bin/bash",
-      "extra_groups": [ "cassandra" ]
+      "extra_groups": [ "ead" ]
     }
   },
 
   "groups": [
-    "cassandra"
+    "ead"
   ]
 }

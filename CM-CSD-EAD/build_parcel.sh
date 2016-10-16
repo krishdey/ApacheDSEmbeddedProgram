@@ -9,7 +9,7 @@ fi
 
 set -ex
 
-PARCEL_DIR=DATASTAX_CASSANDRA-$1
+PARCEL_DIR=JPMISEAD-$1
 PARCEL=$PARCEL_DIR-$2.parcel
 
 # Removing previously created parcel and manifest
@@ -22,17 +22,17 @@ cp -r parcel-src/meta $PARCEL_DIR/
 sed -i -e "s/%VERSION%/$1/" ./$PARCEL_DIR/meta/*
 
 # Validate and build parcel
-java -jar ~/github/cm_ext/validator/target/validator.jar -d ./$PARCEL_DIR
+java -jar /Hadoop/git/CSD/cm_ext/validator/target/validator.jar -d ./$PARCEL_DIR
 
 tar zcvhf ./$PARCEL $PARCEL_DIR --owner=root --group=root
 
-java -jar ~/github/cm_ext/validator/target/validator.jar -f ./$PARCEL
+java -jar /Hadoop/git/CSD/cm_ext/validator/target/validator.jar -f ./$PARCEL
 
 # Remove parcel working directory
 #rm -rf ./$PARCEL_DIR
 
 # Create parcel manifest
-~/github/cm_ext/make_manifest/make_manifest.py .
+/Hadoop/git/CSD/cm_ext/make_manifest/make_manifest.py .
 
 mv manifest.json parcel-and-csd/
 mv $PARCEL parcel-and-csd/

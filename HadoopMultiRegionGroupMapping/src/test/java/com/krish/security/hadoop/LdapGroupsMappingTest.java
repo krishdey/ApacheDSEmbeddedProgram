@@ -374,7 +374,6 @@ public class LdapGroupsMappingTest {
     ldap.setConf(new Configuration());
     System.out.println(ldap.getGroups("krish"));
     assertTrue(ldap.getGroups("krish").get(0).equals("ND-POC-ENG"));
-
-  }
+ }
 
 }

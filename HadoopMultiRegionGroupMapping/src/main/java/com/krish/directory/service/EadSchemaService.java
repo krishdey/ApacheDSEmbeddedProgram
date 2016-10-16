@@ -9,10 +9,17 @@ import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.server.core.api.DirectoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * 
+ * @author krishdey
+ *
+ */
 public class EadSchemaService {
 
+  /**Logger of the class */
   private static final Logger LOG = LoggerFactory.getLogger(EadSchemaService.class);
+  
+  /** Directory service of the EAD Server */
   private DirectoryService directoryService;
 
   public EadSchemaService(DirectoryService directoryService) {
@@ -116,18 +123,30 @@ public class EadSchemaService {
     directoryService.getAdminSession().modify(modReq);
   }
 
+  /**
+   * Check if the user exist
+   * @param userUid
+   * @return
+   * @throws Exception
+   */
   public boolean checkIfUserExist(String userUid) throws Exception {
     Dn userDn = new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
     return directoryService.getAdminSession().exists(userDn);
   }
 
+  /**
+   * Check if the group exist
+   * @param groupCn
+   * @return
+   * @throws Exception
+   */
   public boolean checkIfGroupExist(String groupCn) throws Exception {
     Dn groupDn = new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
     return directoryService.getAdminSession().exists(groupDn);
   }
 
   /**
-   * 
+   * Check if the user member of the group
    * @param userUid
    * @param groupCn
    * @return
