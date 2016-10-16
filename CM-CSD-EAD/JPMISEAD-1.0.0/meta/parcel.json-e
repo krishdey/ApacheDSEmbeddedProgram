@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "JPMISEAD",
-  "version": "1.0.0",
+  "version": "%VERSION%",
   "setActiveSymlink": true,
 
   "depends": "",
@@ -20,7 +20,7 @@
 
   "components": [
     { "name"       : "jpmisead",
-      "version"    : "1.0.0"
+      "version"    : "%VERSION%"
     }
   ],
 

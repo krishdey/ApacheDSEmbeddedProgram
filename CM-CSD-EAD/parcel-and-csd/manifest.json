@@ -1,0 +1,18 @@
+{
+    "parcels": [
+        {
+            "replaces": "",
+            "hash": "36cea54809c3457db576b0bcaa4fa930043db75d",
+            "depends": "",
+            "components": [
+                {
+                    "version": "1.0.0",
+                    "name": "jpmisead"
+                }
+            ],
+            "conflicts": "",
+            "parcelName": "JPMISEAD-1.0.0-el6.parcel"
+        }
+    ],
+    "lastUpdated": 1476660391092
+}
