@@ -111,7 +111,7 @@ elif [ "$EAD_ACTION" = "stop" ]; then
     # Printing instance information
     if [ -f $EAD_PID ]; then
         PID=`cat $EAD_PID`
-        [ $HAVE_TTY -eq 1 ] && echo "Stopping EAD Servr instance '$EAD_INSTANCE_NAME' running as $PID"
+        [ $HAVE_TTY -eq 1 ] && echo "Stopping EAD Server instance '$EAD_INSTANCE_NAME' running as $PID"
 
         kill -15 $PID > /dev/null 2>&1
 
@@ -120,13 +120,13 @@ elif [ "$EAD_ACTION" = "stop" ]; then
             kill -0 $PID > /dev/null 2>&1 -gt 0
             if [ $? > 0 ]; then
                 rm -f $EAD_PID > /dev/null 2>&1
-                [ $HAVE_TTY -eq 1 ] && echo "EAD Servr instance '$EAD_INSTANCE_NAME' stopped successfully"
+                [ $HAVE_TTY -eq 1 ] && echo "EAD Server instance '$EAD_INSTANCE_NAME' stopped successfully"
                 break
             fi
             sleep 1
             ATTEMPTS_REMAINING=`expr $ATTEMPTS_REMAINING - 1`
         done
     else
-        [ $HAVE_TTY -eq 1 ] && echo "EAD Servr is not running, $EAD_PID does not exist"
+        [ $HAVE_TTY -eq 1 ] && echo "EAD Server is not running, $EAD_PID does not exist"
     fi
 fi
