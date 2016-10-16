@@ -2535,3 +2535,40 @@
 [17:47:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
 [17:48:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
 [17:48:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:49:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:49:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:50:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:50:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:51:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:51:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:52:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:52:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:53:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:53:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:54:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:54:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:55:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:55:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:56:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:56:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:57:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:57:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:58:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:58:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[17:59:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[17:59:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:00:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:00:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:01:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:01:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:02:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:02:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:03:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:03:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:04:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:04:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:05:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:05:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:06:12] INFO [com.krish.security.hadoop.impl.LdapGroupsMapping] - Trying to get users for group ND-POC-ENG for NAEAST
+[18:06:12] INFO [com.krish.directory.service.DefaultGroupMappingService] - The users for the group ND-POC-ENG are [krish, jim, chris]
+[18:06:30] INFO [org.apache.directory.server.core.api.CacheService] - clearing all the caches

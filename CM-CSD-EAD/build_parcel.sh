@@ -24,9 +24,9 @@ sed -i -e "s/%VERSION%/$1/" ./$PARCEL_DIR/meta/*
 # Validate and build parcel
 java -jar /Hadoop/git/CSD/cm_ext/validator/target/validator.jar -d ./$PARCEL_DIR
 
-tar zcvhf ./$PARCEL $PARCEL_DIR --owner=root --group=root
+tar zcvhf ./$PARCEL $PARCEL_DIR 
 
-java -jar /Hadoop/git/CSD/cm_ext/validator/target/validator.jar -f ./$PARCEL
+#java -jar /Hadoop/git/CSD/cm_ext/validator/target/validator.jar -f ./$PARCEL
 
 # Remove parcel working directory
 #rm -rf ./$PARCEL_DIR
