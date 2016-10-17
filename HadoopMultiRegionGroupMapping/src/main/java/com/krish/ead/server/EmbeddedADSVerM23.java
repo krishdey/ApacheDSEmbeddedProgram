@@ -153,6 +153,7 @@ public class EmbeddedADSVerM23 {
     
     FileOutputStream out = new FileOutputStream(ldifFile);
     IOUtils.write(ldifData, out);
+    IOUtils.closeQuietly(out);
 
     LdifFileLoader loader = new LdifFileLoader(directoryService.getAdminSession(), ldifFile.getAbsolutePath());
     int count = loader.execute();
