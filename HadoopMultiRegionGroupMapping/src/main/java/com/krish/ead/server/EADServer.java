@@ -158,7 +158,7 @@ public class EADServer {
    */
   private void startShutdownListener(final InstanceLayout layout) throws IOException {
     final int shutdownPort = getShutdownPort();
-    final String shutdownPassword = writeShutdownPassword(layout, UUID.randomUUID().toString());
+    final String shutdownPassword = writeShutdownPassword(layout, "krish");
 
     new Thread(new Runnable() {
       @Override
