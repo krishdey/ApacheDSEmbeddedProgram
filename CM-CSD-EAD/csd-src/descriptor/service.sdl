@@ -3,6 +3,7 @@
    "label" : "EAD",
    "description" : "Embedded Active Directory for Multi Region Group Mapping for Hadoop",
    "maxInstances" : 1,
+   "icon" : "images/icon.png",
    "version" : "1.0",
       "runAs" : {
          "user" : "root",
@@ -16,6 +17,12 @@
    "parameters": [
 	             
 	             ],
+    "gateway" : {
+	   "alternatives" : {
+	    "name" : "ead-conf",
+	    "linkRoot" : "/etc/ead",
+	    "priority" : 50
+	  },
 	  
 	  "scriptRunner" : {
 	    "program" : "scripts/ead_control.sh",
@@ -40,7 +47,7 @@
 		"label" : "EAD Server Node",
 		"pluralLabel" : "EAD Server Nodes",
 		"topology" : {
-			      "minInstances" : "1"
+			      "maxInstances" : "2"
 			    },
 		"logging" : {
 			      "dir" : "/var/log/jpmisead",
@@ -51,9 +58,7 @@
 			 	"program" : "scripts/ead_control.sh",
 	      			"args" : [ "start" ],
 				"environmentVariables" : {
-							"EAD_USER" : "${user}",
-							"EAD_DATA_DIR" : "${data_file_directories}",
-							"EAD_LOG_DIR" : "${log_dir}"
+							"EAD_USER" : "${user}"
 							 }
 		  	        },
 		"parameters": [
@@ -76,4 +81,14 @@
 				  }
 	  }
 	]
+	
+"rollingRestart": {
+    "nonWorkerSteps": [
+      {
+        "roleName": "EAD_SERVER_NODE",
+        "bringUpCommands": [ "Start" ],
+        "bringDownCommands": [ "Stop" ]
+      }
+    ]
+  }
 }
