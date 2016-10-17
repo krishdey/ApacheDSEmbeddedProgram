@@ -121,6 +121,11 @@ public class EadSchemaService {
     modReq.setName(new Dn("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com"));
     modReq.remove("member", "cn=" + userUid + ",ou=users,dc=jpmis,dc=com");
     directoryService.getAdminSession().modify(modReq);
+    
+    modReq = new ModifyRequestImpl();
+    modReq.setName(new Dn("cn=" + userUid + ",ou=users,dc=jpmis,dc=com"));
+    modReq.remove("memberOf", "cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
+    directoryService.getAdminSession().modify(modReq);
   }
 
   /**
