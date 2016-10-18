@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * EAD Server
+ * 
  * @author krishdey
  *
  */
@@ -31,7 +32,7 @@ public class EADServer {
   private static final String PROPERTY_SHUTDOWN_PORT = "ead.shutdown.port";
 
   /** The EAD service */
-  private EmbeddedADSVerM23 service;
+  private static EmbeddedADSVerM23 service;
 
   private static final String EAD_STARTUP_PORT = "ead.server.port";
 
@@ -40,6 +41,8 @@ public class EADServer {
   private static String HADOOP_GROUP_MAPPING_XML = "hadoop-group-mapping";
 
   private static String hadoopGroupMappingPath;
+
+  private static Thread shutdownThread;
 
   /**
    * Takes a single argument, the path to the installation home, which contains
@@ -67,6 +70,18 @@ public class EADServer {
 
     switch (action) {
     case START:
+
+      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        public void run() {
+          LOG.info("Shutdown thread called");
+          try {
+            shutdown();
+          } catch (Exception e) {
+            LOG.warn("Failed to shut down the directory service: " + e);
+          }
+        }
+      }, "ApacheDS Shutdown Hook"));
+
       // Starts the server
       LOG.debug("Starting runtime");
       instance.start(instanceDirectory, port);
@@ -136,7 +151,19 @@ public class EADServer {
     }
   }
 
-  public void stop() {
+  private static void shutdown() {
+    try {
+      EADGroupMappingUpdater.getEADGroupMappingUpdaterInstance(getEADService(),
+          hadoopGroupMappingPath).stopUpdater();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    stop();
+    shutdownThread.interrupt();
+  }
+
+  public static void stop() {
     if (service != null) {
       try {
         LOG.info("Stopping the service.");
@@ -160,7 +187,7 @@ public class EADServer {
     final int shutdownPort = getShutdownPort();
     final String shutdownPassword = writeShutdownPassword(layout, UUID.randomUUID().toString());
 
-    new Thread(new Runnable() {
+    shutdownThread = new Thread(new Runnable() {
       @Override
       public void run() {
         // bind to localhost only to prevent connections from outside the box
@@ -187,7 +214,7 @@ public class EADServer {
 
                 reader.close();
 
-                if ("krish".equals("krish")) {
+                if (shutdownPassword.equals(password)) {
                   stop();
                   break;
                 } else {
@@ -204,7 +231,8 @@ public class EADServer {
         }
 
       }
-    }).start();
+    });
+    shutdownThread.start();
   }
 
   private static String writeShutdownPassword(InstanceLayout layout, String password)
@@ -234,7 +262,7 @@ public class EADServer {
     }
   }
 
-  public EmbeddedADSVerM23 getEADService() {
+  public static EmbeddedADSVerM23 getEADService() {
     return service;
   }
 

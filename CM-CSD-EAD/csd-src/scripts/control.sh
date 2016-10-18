@@ -37,12 +37,12 @@ case $CMD in
    rm -rf  $EAD_HOME/run/*
    exec $EAD_HOME/bin/ead.sh krish run
    ;;
+ 
  (stop)
   
     echo "Shutting down $PROG on" `hostname`
-    exec $EAD_HOME/bin/ead.sh stop
-
-    pkill -P `pgrep -f "control.sh start"`
+    #exec $EAD_HOME/bin/ead.sh stop
+    pkill -P `pgrep -f "ead.sh krish run"`
     ;;
   (*)
     echo "Don't understand [$CMD]"

@@ -16,10 +16,12 @@ public final class EADGroupMappingUpdater {
 
   private static final Logger LOG = LoggerFactory.getLogger(EADGroupMappingUpdater.class);
 
-  Thread thread;
+  private Thread thread;
+  
+  private static volatile boolean running = true;
 
   private EADGroupMappingUpdater() {
-
+      //Do not allow it to instantiated default constructor
   }
 
   public static EADGroupMappingUpdater getEADGroupMappingUpdaterInstance(EmbeddedADSVerM23 service,
@@ -52,7 +54,9 @@ public final class EADGroupMappingUpdater {
   }
 
   public void stopUpdater() {
+    running = false;
     thread.interrupt();
+    thread = null;
   }
 
   static class GroupMappingUpdaterThread implements Runnable {
@@ -66,15 +70,14 @@ public final class EADGroupMappingUpdater {
     @Override
     public void run() {
 
-      while (true) {
+      while (running) {
         try {
           LOG.info("Going to run schema update");
           groupMappingService.doSchemaUpdate();
           LOG.info("Schema update finishded");
           Thread.sleep(interval);
         } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          LOG.info("Thread has been interrupted " + e);
         }
 
       }

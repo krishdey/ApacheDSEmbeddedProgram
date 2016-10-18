@@ -86,7 +86,7 @@
 </property>
 
 <property>
-	<name>hadoop.security.group.mapping.ldap.provider.EMEA.bind.password</name>
+	<name>hadoop.security.group.mapping.ldap.provider.EMEA.ldap.bind.password</name>
 	<value>jpmis002@</value>
 </property>
 
@@ -98,7 +98,7 @@
 </property>
 
 <property>
-	<name>hadoop.security.group.mapping.ldap.provider.ASIAPAC.bind.password</name>
+	<name>hadoop.security.group.mapping.ldap.provider.ASIAPAC.ldap.bind.password</name>
 	<value>jpmis002@</value>
 </property>
 

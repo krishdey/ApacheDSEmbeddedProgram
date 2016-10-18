@@ -3,7 +3,6 @@ package com.krish.ead.server;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.server.core.api.DirectoryService;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
