@@ -15,7 +15,9 @@ public final class EADGroupMappingUpdater {
   static GroupMappingService groupMappingService;
 
   private static final Logger LOG = LoggerFactory.getLogger(EADGroupMappingUpdater.class);
-  
+
+  Thread thread;
+
   private EADGroupMappingUpdater() {
 
   }
@@ -36,7 +38,7 @@ public final class EADGroupMappingUpdater {
 
       groupMappingService = new DefaultGroupMappingService();
       groupMappingService.setEadSchemaService(eadSchemaService);
-      
+
       groupMappingService.buildGroupMapping(new Path(hadoopGroupMappingPath));
 
     }
@@ -45,8 +47,12 @@ public final class EADGroupMappingUpdater {
   }
 
   public void startUpdater() {
-    Thread thread = new Thread(new GroupMappingUpdaterThread(60 * 1000, groupMappingService));
+    thread = new Thread(new GroupMappingUpdaterThread(60 * 1000, groupMappingService));
     thread.start();
+  }
+
+  public void stopUpdater() {
+    thread.interrupt();
   }
 
   static class GroupMappingUpdaterThread implements Runnable {

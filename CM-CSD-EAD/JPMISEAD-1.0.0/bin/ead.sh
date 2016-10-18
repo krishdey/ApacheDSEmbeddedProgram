@@ -128,5 +128,7 @@ elif [ "$EAD_ACTION" = "stop" ]; then
         done
     else
         [ $HAVE_TTY -eq 1 ] && echo "EAD Server is not running, $EAD_PID does not exist"
+        ps -ef | grep "JPMISEAD" | grep -v grep | xargs kill -9
+
     fi
 fi

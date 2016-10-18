@@ -3,19 +3,20 @@ package com.krish.ead.server;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.server.core.api.DirectoryService;
+import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.krish.directory.service.EadSchemaService;
 
 public class EadIntegrationTest {
   static EADServer eadServer;
-  DirectoryService directoryService;
-  EadSchemaService eadSchemaService;
+  static DirectoryService directoryService;
+  static EadSchemaService eadSchemaService;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     eadServer = new EADServer();
     eadServer.start("/tmp/krish", 10389);
     directoryService = eadServer.getEADService().getDirectoryService();
