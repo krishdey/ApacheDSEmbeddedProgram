@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 CMD=$1
 
 _term() { 
@@ -17,31 +18,29 @@ if [ -z $EAD_HOME ]
 	EAD_HOME=/opt/cloudera/parcels/JPMISEAD
 fi
 
+echo "The EAD HOME IS $EAD_HOME"
 
 adjust_config() {
 
-   echo "Starting program EAD.."
+   echo "Adjusting program EAD.."
 }
 
+echo "The command is $CMD"
 case $CMD in
   (deploy)
+  adjust_config
+   ;;
   
-   adjust_config
-
-   ;;
-  (start)
+ (start)
    
-   adjust_config
-
    echo "Starting $PROG on" `hostname`
-   $EAD_HOME/bin/ead.sh krish start
-   child=$! 
-   wait "$child"
+   rm -rf  $EAD_HOME/run/*
+   exec $EAD_HOME/bin/ead.sh krish run
    ;;
-  (stop)
+ (stop)
   
     echo "Shutting down $PROG on" `hostname`
-	$EAD_HOME/bin/ead.sh stop
+    exec $EAD_HOME/bin/ead.sh stop
 
     pkill -P `pgrep -f "control.sh start"`
     ;;
