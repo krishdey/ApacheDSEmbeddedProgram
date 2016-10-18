@@ -3,92 +3,72 @@
    "label" : "EAD",
    "description" : "Embedded Active Directory for Multi Region Group Mapping for Hadoop",
    "maxInstances" : 1,
-   "icon" : "images/icon.png",
+   "icon" : "images/icon.png", 
    "version" : "1.0",
       "runAs" : {
          "user" : "root",
          "group" : "root"
       },
-  
-   "parcel" : {
-   		"requiredTags" : [ "jpmisead" ]
-   },
-
-   "parameters": [
-	             
-	             ],
-    "gateway" : {
-	   "alternatives" : {
-	    "name" : "ead-conf",
-	    "linkRoot" : "/etc/ead",
-	    "priority" : 50
-	  },
-	  
-	  "scriptRunner" : {
-	    "program" : "scripts/ead_control.sh",
-	    "args" : ["deploy"],
-				"environmentVariables" : {
-							"CLIENT_CONFIG_DIR" : "ead-conf"
-							 }
-	  },
-	  "configWriter" : {
-				    	"auxConfigGenerators" : [
-					       {
-						 "filename" : "ead-conf/ead-env.sh",
-						 "sourceFilename" : "aux/ead-env.sh"
-					       }
-				     ]
-				  }
-	 },
-
-   "roles" : [
-	  {
-	  	"name" : "EAD_SERVER_NODE",
-		"label" : "EAD Server Node",
-		"pluralLabel" : "EAD Server Nodes",
-		"topology" : {
-			      "maxInstances" : "2"
-			    },
-		"logging" : {
-			      "dir" : "/var/log/jpmisead",
-			      "filename" : "jpmisead.log",
-			      "modifiable" : true
-	    		    },
-		"startRunner" : {
-			 	"program" : "scripts/ead_control.sh",
-	      			"args" : [ "start" ],
-				"environmentVariables" : {
-							"EAD_USER" : "${user}"
-							 }
-		  	        },
-		"parameters": [
-			    {
-                                "name": "ead.server.port",
-                                "label": "EAD Bind Port",
-                                "description": "Port to listen for clients on.",
-                                "required": "true",
-                                "type": "port",
-                                "default": "10389"
-                            }
-			      ],		
-		"configWriter" : {
-					"auxConfigGenerators" : [
-					       {
-						 "filename" : "ead-env.sh",
-						 "sourceFilename" : "aux/ead-env.sh"
-					       }
-				     ]
-				  }
-	  }
-	]
-	
-"rollingRestart": {
-    "nonWorkerSteps": [
+  "maxInstances" : 1,
+  "parcel" : {
+    "requiredTags" : ["jpmisead"]
+  },
+  "roles" : [
+   {
+      "name" : "EAD_ADMIN_NODE",
+      "label" : "EAD Server",
+      "pluralLabel" : "EAD Servers",
+      "topology" : { 
+        "minInstances" : 1, 
+        "maxInstances" : 1 
+      },
+      "runAs" : {
+        "user" : "root",
+        "group" : "root"
+      },
+      "startRunner" : {
+        "program" : "scripts/control.sh",
+        "args" : [ "start" ],
+        "environmentVariables" : {
+           "LOGSDIR_PORT" : "${port_num}"
+        }
+      },
+      "parameters" : [
       {
-        "roleName": "EAD_SERVER_NODE",
-        "bringUpCommands": [ "Start" ],
-        "bringDownCommands": [ "Stop" ]
-      }
-    ]
-  }
+      "name" : "port_num",
+      "label" : "Logs directory port",
+       "description" : "The logs directory List",
+       "required" : "false",
+       "type" : "string",
+       "default" : 58080
+     }
+     ],
+      "commands" : [
+            {
+              "name" : "RunEADAdminCommand",
+              "label" : "Creating EAD Config File",
+              "description" : "Creating the EAD Config File on HDFS.",
+              "expectedExitCodes" : [0],
+              "requiredRoleState" : "stopped",
+              "commandRunner" : {
+                "program" : "scripts/control.sh",
+                "args" : ["config"]
+              }
+            },
+            {
+              "name" : "RunEADAdminStopCommand",
+              "label" : "Stopping EAD Config File",
+              "description" : "Stopping the EAD service.",
+              "expectedExitCodes" : [0],
+              "requiredRoleState" : "stopped",
+              "commandRunner" : {
+              "program" : "scripts/control.sh",
+              "args" : ["stop"]
+              }
+           }
+      ]
+   }
+  ]
 }
+
+
