@@ -13,6 +13,8 @@ Take help from https://github.com/elisska/cloudera-cassandra
 
 Process directory /var/run/cloudera-scm-agent/process/
 
+https://github.com/cloudera/cm_csds/blob/master/KAFKA/
+
 
 
 
