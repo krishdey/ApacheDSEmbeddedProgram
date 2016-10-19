@@ -94,8 +94,7 @@ elif [ "$EAD_ACTION" = "run" ]; then
      -Dead.server.port=10389 \
      -Dhadoop-group-mapping=/Hadoop/hadoop-group-mapping.xml \
      -classpath "\"$CLASSPATH\"" \
-      com.krish.ead.server.EADServer "\"$EAD_INSTANCE\"" &
-     echo $! > "$EAD_PID" 
+      com.krish.ead.server.EADServer "\"$EAD_INSTANCE\""
 
 elif [ "$EAD_ACTION" = "status" ]; then
     if [ -f $EAD_PID ]; then
