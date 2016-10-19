@@ -74,6 +74,9 @@ public class EADServer {
     LOG.trace("Exiting main");
   }
 
+  /**
+   * Add the shutdown hook
+   */
   private static void startShutdownHook(){
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
       public void run() {
@@ -81,7 +84,7 @@ public class EADServer {
         try {
           shutdown();
         } catch (Exception e) {
-          LOG.warn("Failed to shut down the directory service: " + e);
+          LOG.warn("Failed to shut down the EAD service: " + e);
         }
       }
     }, "ApacheDS Shutdown Hook"));
