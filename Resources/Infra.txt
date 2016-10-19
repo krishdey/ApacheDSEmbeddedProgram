@@ -9,6 +9,9 @@ TODO:
 Add JAVA params to configuration in CM.
 Add logj properties to CM conf
 
+Take help from https://github.com/elisska/cloudera-cassandra
+
+
 
 
 
