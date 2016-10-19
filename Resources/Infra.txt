@@ -1,5 +1,8 @@
 Parcels are in /opt/cloudera/parcels/JPMISEAD
 
+CSD- Custom Service Descriptor.
+/opt/cloudera/csd
+
 
 
 
