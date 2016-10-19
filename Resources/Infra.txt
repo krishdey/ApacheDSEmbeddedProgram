@@ -4,6 +4,11 @@ CSD- Custom Service Descriptor.
 /opt/cloudera/csd
 
 
+TODO:
+
+Add JAVA params to configuration in CM.
+Add logj properties to CM conf
+
 
 
 
