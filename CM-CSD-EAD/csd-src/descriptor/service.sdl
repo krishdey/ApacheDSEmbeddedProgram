@@ -18,6 +18,7 @@
       "name" : "EAD_ADMIN_NODE",
       "label" : "EAD Server",
       "pluralLabel" : "EAD Servers",
+      "jvmBased" : "true",
       "topology" : { 
         "minInstances" : 1, 
         "maxInstances" : 1 

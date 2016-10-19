@@ -35,13 +35,14 @@ case $CMD in
    
    echo "Starting $PROG on" `hostname`
    rm -rf  $EAD_HOME/run/*
-   exec $EAD_HOME/bin/ead.sh krish run
+   exec $EAD_HOME/bin/ead.sh krish run &
+   child=$!
+   wait "$child"
    ;;
  
  (stop)
   
     echo "Shutting down $PROG on" `hostname`
-    #exec $EAD_HOME/bin/ead.sh stop
     pkill -P `pgrep -f "ead.sh krish run"`
     ;;
   (*)

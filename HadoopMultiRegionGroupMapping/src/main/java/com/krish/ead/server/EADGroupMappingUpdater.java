@@ -56,7 +56,6 @@ public final class EADGroupMappingUpdater {
   public void stopUpdater() {
     running = false;
     thread.interrupt();
-    thread = null;
   }
 
   static class GroupMappingUpdaterThread implements Runnable {
@@ -78,6 +77,7 @@ public final class EADGroupMappingUpdater {
           Thread.sleep(interval);
         } catch (InterruptedException e) {
           LOG.info("Thread has been interrupted " + e);
+          groupMappingService = null;
         }
 
       }

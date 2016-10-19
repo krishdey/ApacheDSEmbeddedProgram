@@ -88,13 +88,14 @@ if [ "$EAD_ACTION" = "start" ]; then
 elif [ "$EAD_ACTION" = "run" ]; then
     # Printing instance information
     [ $HAVE_TTY -eq 1 ] && echo "Running EAD instance '$EAD_INSTANCE_NAME'..."
-      eval "\"$RUN_JAVA\"" \
+      eval  exec "\"$RUN_JAVA\"" \
      -Dlog4j.configuration="\"file:$EAD_HOME/conf/log4j.properties\"" \
      -Dapacheds.log.dir="\"$EAD_HOME/log\"" \
      -Dead.server.port=10389 \
      -Dhadoop-group-mapping=/Hadoop/hadoop-group-mapping.xml \
      -classpath "\"$CLASSPATH\"" \
-      com.krish.ead.server.EADServer "\"$EAD_INSTANCE\""
+      com.krish.ead.server.EADServer "\"$EAD_INSTANCE\"" &
+     echo $! > "$EAD_PID" 
 
 elif [ "$EAD_ACTION" = "status" ]; then
     if [ -f $EAD_PID ]; then

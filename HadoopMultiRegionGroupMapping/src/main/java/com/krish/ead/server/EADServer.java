@@ -1,19 +1,8 @@
 package com.krish.ead.server;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.directory.api.util.Network;
 import org.apache.directory.server.core.api.InstanceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +17,6 @@ public class EADServer {
   /** A logger for this class */
   private static final Logger LOG = LoggerFactory.getLogger(EADServer.class);
 
-  /** The key of the property use to specify the shutdown port */
-  private static final String PROPERTY_SHUTDOWN_PORT = "ead.shutdown.port";
-
   /** The EAD service */
   private static EmbeddedADSVerM23 service;
 
@@ -42,7 +28,6 @@ public class EADServer {
 
   private static String hadoopGroupMappingPath;
 
-  private static Thread shutdownThread;
 
   /**
    * Takes a single argument, the path to the installation home, which contains
@@ -70,20 +55,7 @@ public class EADServer {
 
     switch (action) {
     case START:
-
-      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-        public void run() {
-          LOG.info("Shutdown thread called");
-          try {
-            shutdown();
-          } catch (Exception e) {
-            LOG.warn("Failed to shut down the directory service: " + e);
-          }
-        }
-      }, "ApacheDS Shutdown Hook"));
-
-      // Starts the server
-      LOG.debug("Starting runtime");
+      startShutdownHook();
       instance.start(instanceDirectory, port);
       instance.startGroupMappingUpdater();
 
@@ -92,12 +64,7 @@ public class EADServer {
     case STOP:
       // Stops the server
       LOG.debug("Stopping runtime");
-      InstanceLayout layout = new InstanceLayout(instanceDirectory);
-      try (Socket socket = new Socket(Network.LOOPBACK, readShutdownPort(layout));
-          PrintWriter writer = new PrintWriter(socket.getOutputStream())) {
-        writer.print(readShutdownPassword(layout));
-      }
-
+      shutdown();
       break;
 
     default:
@@ -107,23 +74,20 @@ public class EADServer {
     LOG.trace("Exiting main");
   }
 
-  private int getShutdownPort() {
-    int shutdownPort = Integer.parseInt(System.getProperty(PROPERTY_SHUTDOWN_PORT, "0"));
-    if (shutdownPort < 0 || (shutdownPort > 0 && shutdownPort < 1024) || shutdownPort > 65536) {
-      throw new IllegalArgumentException("Shutdown port [" + shutdownPort
-          + "] is an illegal port number");
-    }
-    return shutdownPort;
-  }
+  private static void startShutdownHook(){
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      public void run() {
+        LOG.info("Shutdown thread called");
+        try {
+          shutdown();
+        } catch (Exception e) {
+          LOG.warn("Failed to shut down the directory service: " + e);
+        }
+      }
+    }, "ApacheDS Shutdown Hook"));
 
-  private static int readShutdownPort(InstanceLayout layout) throws IOException {
-    return Integer.parseInt(new String(Files.readAllBytes(Paths.get(layout.getRunDirectory()
-        .getAbsolutePath(), ".shutdown.port")), Charset.forName("utf-8")));
-  }
-
-  private static String readShutdownPassword(InstanceLayout layout) throws IOException {
-    return new String(Files.readAllBytes(Paths.get(layout.getRunDirectory().getAbsolutePath(),
-        ".shutdown.pwd")), Charset.forName("utf-8"));
+    // Starts the server
+    LOG.debug("Starting runtime");
   }
 
   /**
@@ -142,8 +106,7 @@ public class EADServer {
     try {
       LOG.info("Starting the service.");
       service.startServer(layout, port);
-
-      startShutdownListener(layout);
+      
     } catch (Exception e) {
       LOG.error("Failed to start the service.", e);
       stop();
@@ -160,7 +123,6 @@ public class EADServer {
       e.printStackTrace();
     }
     stop();
-    shutdownThread.interrupt();
   }
 
   public static void stop() {
@@ -174,78 +136,6 @@ public class EADServer {
         System.exit(1);
       }
     }
-  }
-
-  /**
-   * Starts a thread that creates a ServerSocket which listens for shutdown
-   * command.
-   *
-   * @param layout the InstanceLayout
-   * @throws IOException
-   */
-  private void startShutdownListener(final InstanceLayout layout) throws IOException {
-    final int shutdownPort = getShutdownPort();
-    final String shutdownPassword = writeShutdownPassword(layout, UUID.randomUUID().toString());
-
-    shutdownThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        // bind to localhost only to prevent connections from outside the box
-        try (ServerSocket shutdownSocket = new ServerSocket(shutdownPort, 1, Network.LOOPBACK)) {
-          writeShutdownPort(layout, shutdownSocket.getLocalPort());
-
-          LOG.info("Start the shutdown listener on port {}", shutdownSocket.getLocalPort());
-
-          Socket socket;
-          while ((socket = shutdownSocket.accept()) != null) {
-            if (shutdownPassword == null || shutdownPassword.isEmpty()) {
-              stop();
-              break;
-            } else {
-              try {
-                InputStreamReader reader = new InputStreamReader(socket.getInputStream());
-
-                CharBuffer buffer = CharBuffer.allocate(2048);
-                while (reader.read(buffer) >= 0) {
-                  // read till end of stream
-                }
-                buffer.flip();
-                String password = buffer.toString();
-
-                reader.close();
-
-                if (shutdownPassword.equals(password)) {
-                  stop();
-                  break;
-                } else {
-                  LOG.warn("Illegal attempt to shutdown, incorrect password {}", password);
-                }
-              } catch (IOException e) {
-                LOG.warn("Failed to handle the shutdown request", e);
-              }
-            }
-          }
-        } catch (IOException e) {
-          LOG.error("Failed to start the shutdown listener, stopping the server", e);
-          stop();
-        }
-
-      }
-    });
-    shutdownThread.start();
-  }
-
-  private static String writeShutdownPassword(InstanceLayout layout, String password)
-      throws IOException {
-    Files.write(Paths.get(layout.getRunDirectory().getAbsolutePath(), ".shutdown.pwd"),
-        password.getBytes(Charset.forName("utf-8")));
-    return password;
-  }
-
-  private static int writeShutdownPort(InstanceLayout layout, int portNumber) throws IOException {
-    Files.write(Paths.get(layout.getRunDirectory().getAbsolutePath(), ".shutdown.port"), Integer
-        .toString(portNumber).getBytes(Charset.forName("utf-8")));
-    return portNumber;
   }
 
   private static enum Action {
