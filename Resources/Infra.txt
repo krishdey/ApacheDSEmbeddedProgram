@@ -11,6 +11,8 @@ Add logj properties to CM conf
 
 Take help from https://github.com/elisska/cloudera-cassandra
 
+Process directory /var/run/cloudera-scm-agent/process/
+
 
 
 
