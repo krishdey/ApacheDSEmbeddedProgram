@@ -1,75 +1,94 @@
 {
-   "name" : "JPMISEAD",
-   "label" : "EAD",
-   "description" : "Embedded Active Directory for Multi Region Group Mapping for Hadoop",
-   "maxInstances" : 1,
-   "icon" : "images/icon.png", 
-   "version" : "1.0",
-      "runAs" : {
-         "user" : "root",
-         "group" : "root"
-      },
-  "maxInstances" : 1,
-  "parcel" : {
-    "requiredTags" : ["jpmisead"]
-  },
-  "roles" : [
-   {
-      "name" : "EAD_ADMIN_NODE",
-      "label" : "EAD Server",
-      "pluralLabel" : "EAD Servers",
-      "jvmBased" : "true",
-      "topology" : { 
-        "minInstances" : 1, 
-        "maxInstances" : 1 
-      },
-      "runAs" : {
-        "user" : "root",
-        "group" : "root"
-      },
-      "startRunner" : {
-        "program" : "scripts/control.sh",
-        "args" : [ "start" ],
-        "environmentVariables" : {
-           "LOGSDIR_PORT" : "${port_num}"
-        }
-      },
-      "parameters" : [
-      {
-      "name" : "port_num",
-      "label" : "Logs directory port",
-       "description" : "The logs directory List",
-       "required" : "false",
-       "type" : "string",
-       "default" : 58080
-     }
-     ],
-      "commands" : [
-            {
-              "name" : "RunEADAdminCommand",
-              "label" : "Creating EAD Config File",
-              "description" : "Creating the EAD Config File on HDFS.",
-              "expectedExitCodes" : [0],
-              "requiredRoleState" : "stopped",
-              "commandRunner" : {
-                "program" : "scripts/control.sh",
-                "args" : ["config"]
-              }
-            },
-            {
-              "name" : "RunEADAdminStopCommand",
-              "label" : "Stopping EAD Config File",
-              "description" : "Stopping the EAD service.",
-              "expectedExitCodes" : [0],
-              "requiredRoleState" : "stopped",
-              "commandRunner" : {
-              "program" : "scripts/control.sh",
-              "args" : ["stop"]
-              }
-           }
-      ]
-   }
-  ]
+	"name": "JPMISEAD",
+	"label": "EAD",
+	"description": "Embedded Active Directory for Multi Region Group Mapping for Hadoop",
+	"icon": "images/icon.png",
+	"version": "1.0",
+	"runAs": {
+		"user": "root",
+		"group": "root"
+	},
+	"maxInstances": 1,
+	"parcel": {
+		"requiredTags": ["jpmisead"]
+	},
+	"roles": [{
+		"name": "EAD_ADMIN_NODE",
+		"label": "EAD Server",
+		"pluralLabel": "EAD Servers",
+		"jvmBased": "true",
+		"topology": {
+			"minInstances": 1,
+			"maxInstances": 1
+		},
+		"runAs": {
+			"user": "root",
+			"group": "root"
+		},
+		"startRunner": {
+			"program": "scripts/control.sh",
+			"args": ["start"],
+			"environmentVariables": {
+				"EAD_PORT": "${port_num}",
+				"EAD_HEAP_SIZE": "${ead_max_heap_size}",
+				"EAD_JAVA_OPTS": "${ead_java_opts}"
+			}
+		},
+               "configWriter" : {
+                 "generators" : [
+                {
+                  "filename" : "hadoop_group_mapping.xml",
+                  "configFormat" : "hadoop_xml",
+                  "refreshable"  : "true",
+                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts"]
+                }
+               ]
+               },
+		"parameters": [{
+			"name": "port_num",
+			"label": "EAD bind port",
+			"description": "The bind port of EAD server",
+			"required": "true",
+			"type": "string",
+			"default": 10389
+		}, {
+			"name": "ead_max_heap_size",
+			"label": "Java Heap Size of EAD",
+			"description": "Maximum size for the Java process heap memory. Passed to Java -Xmx. Measured in megabytes. Kafka does not generally require setting large heap sizes. It is better to let the file system cache utilize the available memory.",
+			"type": "memory",
+			"default": 1024,
+			"min": 50,
+			"softMin": 256,
+			"softMax": 16384,
+			"unit": "megabytes",
+			"scaleFactor": 1.3
+		}, {
+			"name": "ead_java_opts",
+			"label": "Additional EAD Java Options",
+			"description": "These arguments are passed as part of the Java command line. Commonly, garbage collection flags or extra debugging flags are passed here.",
+			"type": "string",
+			"default": "-server -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC -Djava.awt.headless=true"
+		}],
+		"commands": [{
+			"name": "RunEADAdminCommand",
+			"label": "Creating EAD Config File",
+			"description": "Creating the EAD Config File on HDFS.",
+			"expectedExitCodes": [0],
+			"requiredRoleState": "stopped",
+			"commandRunner": {
+				"program": "scripts/control.sh",
+				"args": ["config"]
+			}
+		}, {
+			"name": "RunEADAdminStopCommand",
+			"label": "Stopping EAD Config File",
+			"description": "Stopping the EAD service.",
+			"expectedExitCodes": [0],
+			"requiredRoleState": "stopped",
+			"commandRunner": {
+				"program": "scripts/control.sh",
+				"args": ["stop"]
+			}
+		}]
+	}]
 }
-
-
