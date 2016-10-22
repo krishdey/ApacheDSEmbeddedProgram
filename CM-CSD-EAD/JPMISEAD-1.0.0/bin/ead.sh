@@ -90,8 +90,8 @@ elif [ "$EAD_ACTION" = "run" ]; then
     [ $HAVE_TTY -eq 1 ] && echo "Running EAD instance '$EAD_INSTANCE_NAME'..."
       eval exec "\"$RUN_JAVA\"" \
      $EAD_JAVA_OPTS \
-     -Dlog4j.configuration="\"file:$EAD_HOME/conf/log4j.properties\"" \
-     -Dapacheds.log.dir="\"$EAD_HOME/log\"" \
+     -Dlog4j.configuration="\"$EAD_LOG4J_PROPERTIES\"" \
+     -Dapacheds.log.dir="\"$EAD_LOG_DIR\"" \
      -Dead.server.port=$EAD_PORT \
      -Dhadoop-group-mapping=$EAD_XML_PATH \
      -classpath "\"$CLASSPATH\"" \
