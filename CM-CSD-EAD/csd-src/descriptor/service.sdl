@@ -30,8 +30,10 @@
 			"args": ["start"],
 			"environmentVariables": {
 				"EAD_PORT": "${port_num}",
-				"EAD_HEAP_SIZE": "${ead_max_heap_size}",
-				"EAD_JAVA_OPTS": "${ead_java_opts}"
+				"EAD_HEAP_SIZE" : "${ead_max_heap_size}",
+				"EAD_JAVA_OPTS" : "${ead_java_opts}",
+                                "EAD_LOG4J_DIR" : "${log_dir}",
+                                "EAD_INSTANCES_DIR" : "${ead_instances_dir}"
                         }
 
 		},               
@@ -39,7 +41,6 @@
                   "dir": "/var/log/ead",
                   "filename": "ead-server.log",
                   "modifiable": true,
-                  "configName": "ead.log4j.dir",
                   "loggingType": "log4j"
                },
                "configWriter" : {
@@ -48,7 +49,7 @@
                   "filename" : "hadoop_group_mapping.xml",
                   "configFormat" : "hadoop_xml",
                   "refreshable"  : "true",
-                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts"]
+                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts","log_dir","ead_instances_dir"]
                 }
                ]
                },
@@ -76,7 +77,13 @@
 			"description": "These arguments are passed as part of the Java command line. Commonly, garbage collection flags or extra debugging flags are passed here.",
 			"type": "string",
 			"default": "-server -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC -Djava.awt.headless=true"
-		}],
+		},{
+                        "name": "ead_instances_dir",
+                        "label": "The instance directory",
+                        "description": "The instance directory",
+                        "type": "string",
+                        "default": "/var/lib/ead/instances"
+                  }],
 		"commands": [{
 			"name": "RunEADAdminCommand",
 			"label": "Creating EAD Config File",
