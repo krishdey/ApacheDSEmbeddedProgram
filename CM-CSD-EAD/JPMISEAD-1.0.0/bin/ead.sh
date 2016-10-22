@@ -37,6 +37,7 @@ fi
 
 [ -r "$EAD_HOME/bin/setenv.sh" ] && . "$EAD_HOME/bin/setenv.sh"
 
+EAD_INSTANCES=$EAD_INSTANCES_DIR
 
 [ -z "$EAD_INSTANCES" ] && EAD_INSTANCES="$EAD_HOME/instances"
 
