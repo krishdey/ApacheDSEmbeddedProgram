@@ -31,10 +31,11 @@ public final class EADGroupMappingUpdater {
       LOG.info("Initializing Updater class for Providers ....");
       eadGroupMappingUpdater = new EADGroupMappingUpdater();
       eadSchemaService = new EadSchemaService(service.getDirectoryService());
-
-      while (!service.getDirectoryService().isStarted()) {
+      int RETRY_COUNT = 5;
+      while (!service.getDirectoryService().isStarted() && RETRY_COUNT!=0) {
         System.out.println("Waiting for service to be started");
         Thread.sleep(1000);
+        RETRY_COUNT--;
       }
       eadSchemaService.loadTestUser();
 
