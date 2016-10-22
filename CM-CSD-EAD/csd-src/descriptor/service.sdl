@@ -31,9 +31,8 @@
 			"environmentVariables": {
 				"EAD_PORT": "${port_num}",
 				"EAD_HEAP_SIZE": "${ead_max_heap_size}",
-				"EAD_JAVA_OPTS": "${ead_java_opts}",
-			        "EAD_LOG_DIR" :  "${ead.log4j.dir}"
-                         }
+				"EAD_JAVA_OPTS": "${ead_java_opts}"
+                        }
 
 		},               
                 "logging": {
@@ -49,7 +48,7 @@
                   "filename" : "hadoop_group_mapping.xml",
                   "configFormat" : "hadoop_xml",
                   "refreshable"  : "true",
-                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts","ead.log4j.dir"]
+                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts"]
                 }
                ]
                },
