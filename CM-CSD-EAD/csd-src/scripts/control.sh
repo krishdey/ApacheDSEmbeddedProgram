@@ -2,16 +2,15 @@
 set -x
 CMD=$1
 
-
 RETVAL=0
 PROG="ead"
 NAME="ead"
 
-echo "CONF_DIR $CONF"
+echo "CONF_DIR ${CONF_DIR}"
 echo "EAD_HEAP_SIZE: ${EAD_HEAP_SIZE}"
 echo "EAD_JAVA_OPTS: ${EAD_JAVA_OPTS}"
 echo "EAD_PORT: ${EAD_PORT}"
-
+echo "log4j directory ${EAD_LOG_DIR}"
 
 
 export EAD_JAVA_OPTS="$CSD_JAVA_OPTS -Xmx${EAD_HEAP_SIZE}M ${EAD_JAVA_OPTS}"
@@ -23,13 +22,9 @@ fi
 
 echo "The EAD HOME IS $EAD_HOME"
 
-adjust_config() {
-
-   echo "Adjusting program EAD.."
-}
-
-export EAD_XML_PATH="$CONF_DIR/hadoop_group_mapping.xml"
-
+export EAD_XML_PATH="${CONF_DIR}/hadoop_group_mapping.xml"
+export EAD_LOG4J_PROPERTIES="file:${CONF_DIR}/log4j.properties"
+export EAD_LOG_DIR=/var/log/ead
 
 echo "The command is $CMD"
 case $CMD in
