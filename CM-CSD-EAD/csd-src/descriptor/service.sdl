@@ -12,6 +12,23 @@
 	"parcel": {
 		"requiredTags": ["jpmisead"]
 	},
+
+
+	"commands": [{
+		"name": "EADInitServiceCommand",
+		"label": "Initialize EAD",
+		"description": "Initializes EAD server.",
+		"roleName": "EAD_ADMIN_NODE",
+		"roleCommand": "EADInitCommand",
+		"runMode": "single"
+	}],
+
+	"serviceInit": {
+		"preStartSteps": [{
+			"commandName": "EADInitServiceCommand"
+		}]
+	},
+
 	"roles": [{
 		"name": "EAD_ADMIN_NODE",
 		"label": "EAD Server",
@@ -21,38 +38,51 @@
 			"minInstances": 1,
 			"maxInstances": 1
 		},
-		"runAs": {
-			"user": "root",
-			"group": "root"
-		},
+		"commands": [{
+			"name": "EADInitCommand",
+			"label": "Initialize EAD",
+			"description": "Initializes EAD.",
+			"expectedExitCodes": [0],
+			"requiredRoleState": "stopped",
+			"commandRunner": {
+				"program": "scripts/control.sh",
+				"args": ["init"],
+				"environmentVariables": {
+					"EAD_LOG4J_DIR": "${log_dir}",
+					"EAD_INSTANCES_DIR": "${ead_instances_dir}",
+                                        "EAD_USER" : "${user}",
+                                        "EAD_GROUP" :  "${group}"
+
+				}
+			}
+		}],
+
 		"startRunner": {
 			"program": "scripts/control.sh",
 			"args": ["start"],
 			"environmentVariables": {
 				"EAD_PORT": "${port_num}",
-				"EAD_HEAP_SIZE" : "${ead_max_heap_size}",
-				"EAD_JAVA_OPTS" : "${ead_java_opts}",
-                                "EAD_LOG4J_DIR" : "${log_dir}",
-                                "EAD_INSTANCES_DIR" : "${ead_instances_dir}"
-                        }
+				"EAD_HEAP_SIZE": "${ead_max_heap_size}",
+				"EAD_JAVA_OPTS": "${ead_java_opts}",
+				"EAD_LOG4J_DIR": "${log_dir}",
+				"EAD_INSTANCES_DIR": "${ead_instances_dir}"
+			}
 
-		},               
-                "logging": {
-                  "dir": "/var/log/ead",
-                  "filename": "ead-server.log",
-                  "modifiable": true,
-                  "loggingType": "log4j"
-               },
-               "configWriter" : {
-                 "generators" : [
-                {
-                  "filename" : "hadoop_group_mapping.xml",
-                  "configFormat" : "hadoop_xml",
-                  "refreshable"  : "true",
-                  "excludedParams" : ["port_num", "ead_max_heap_size","ead_java_opts","log_dir","ead_instances_dir"]
-                }
-               ]
-               },
+		},
+		"logging": {
+			"dir": "/var/log/ead",
+			"filename": "ead-server.log",
+			"modifiable": true,
+			"loggingType": "log4j"
+		},
+		"configWriter": {
+			"generators": [{
+				"filename": "hadoop_group_mapping.xml",
+				"configFormat": "hadoop_xml",
+				"refreshable": "true",
+				"excludedParams": ["port_num", "ead_max_heap_size", "ead_java_opts", "log_dir", "ead_instances_dir"]
+			}]
+		},
 		"parameters": [{
 			"name": "port_num",
 			"label": "EAD bind port",
@@ -66,7 +96,7 @@
 			"description": "Maximum size for the Java process heap memory. Passed to Java -Xmx. Measured in megabytes. Kafka does not generally require setting large heap sizes. It is better to let the file system cache utilize the available memory.",
 			"type": "memory",
 			"default": 1024,
-			"min": 50,
+			"min": 512,
 			"softMin": 256,
 			"softMax": 16384,
 			"unit": "megabytes",
@@ -77,33 +107,12 @@
 			"description": "These arguments are passed as part of the Java command line. Commonly, garbage collection flags or extra debugging flags are passed here.",
 			"type": "string",
 			"default": "-server -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC -Djava.awt.headless=true"
-		},{
-                        "name": "ead_instances_dir",
-                        "label": "The instance directory",
-                        "description": "The instance directory",
-                        "type": "string",
-                        "default": "/var/lib/ead/instances"
-                  }],
-		"commands": [{
-			"name": "RunEADAdminCommand",
-			"label": "Creating EAD Config File",
-			"description": "Creating the EAD Config File on HDFS.",
-			"expectedExitCodes": [0],
-			"requiredRoleState": "stopped",
-			"commandRunner": {
-				"program": "scripts/control.sh",
-				"args": ["config"]
-			}
 		}, {
-			"name": "RunEADAdminStopCommand",
-			"label": "Stopping EAD Config File",
-			"description": "Stopping the EAD service.",
-			"expectedExitCodes": [0],
-			"requiredRoleState": "stopped",
-			"commandRunner": {
-				"program": "scripts/control.sh",
-				"args": ["stop"]
-			}
+			"name": "ead_instances_dir",
+			"label": "The instance directory",
+			"description": "The instance directory",
+			"type": "string",
+			"default": "/var/lib/ead/instances"
 		}]
 	}]
 }
