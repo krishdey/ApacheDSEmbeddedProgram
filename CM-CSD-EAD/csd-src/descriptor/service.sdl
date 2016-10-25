@@ -96,8 +96,8 @@
 			"description": "Maximum size for the Java process heap memory. Passed to Java -Xmx. Measured in megabytes. Kafka does not generally require setting large heap sizes. It is better to let the file system cache utilize the available memory.",
 			"type": "memory",
 			"default": 1024,
-			"min": 512,
-			"softMin": 256,
+			"min": 256,
+			"softMin": 512,
 			"softMax": 16384,
 			"unit": "megabytes",
 			"scaleFactor": 1.3
