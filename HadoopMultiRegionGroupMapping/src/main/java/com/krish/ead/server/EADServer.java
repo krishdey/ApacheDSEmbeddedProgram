@@ -22,9 +22,9 @@ public class EADServer {
 
   private static final String EAD_STARTUP_PORT = "ead.server.port";
 
-  private static int DEFAULT_STARTUP_PORT = 10389;
+  private static final int DEFAULT_STARTUP_PORT = 10389;
 
-  private static String HADOOP_GROUP_MAPPING_XML = "hadoop-group-mapping";
+  private static final String HADOOP_GROUP_MAPPING_XML = "hadoop-group-mapping";
 
   private static String hadoopGroupMappingPath;
 
@@ -48,10 +48,12 @@ public class EADServer {
         StringUtils.isEmpty(System.getProperty(EAD_STARTUP_PORT)) ? DEFAULT_STARTUP_PORT : Integer
             .parseInt(System.getProperty(EAD_STARTUP_PORT));
 
+    //Check for hadoop xml location for group mapping
     hadoopGroupMappingPath = System.getProperty(HADOOP_GROUP_MAPPING_XML);
     if (!new File(hadoopGroupMappingPath).exists()) {
       throw new RuntimeException("hadoop group mapping xml is not found");
     }
+    
 
     switch (action) {
     case START:

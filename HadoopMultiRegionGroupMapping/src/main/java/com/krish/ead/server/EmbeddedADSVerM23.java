@@ -12,6 +12,8 @@ import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicyImpl;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.message.AddRequest;
+import org.apache.directory.api.ldap.model.message.AddRequestImpl;
 import org.apache.directory.api.ldap.model.message.ModifyRequest;
 import org.apache.directory.api.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.api.ldap.model.name.Dn;
@@ -146,16 +148,18 @@ public class EmbeddedADSVerM23 {
 
   private void loadJpmisSchema() throws IOException {
 
-    String ldifData = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("krish.schema"));
-    
+    String ldifData =
+        IOUtils.toString(getClass().getClassLoader().getResourceAsStream("krish.schema"));
+
     File ldifFile = File.createTempFile("ldif", ".tmp");
     ldifFile.deleteOnExit();
-    
+
     FileOutputStream out = new FileOutputStream(ldifFile);
     IOUtils.write(ldifData, out);
     IOUtils.closeQuietly(out);
 
-    LdifFileLoader loader = new LdifFileLoader(directoryService.getAdminSession(), ldifFile.getAbsolutePath());
+    LdifFileLoader loader =
+        new LdifFileLoader(directoryService.getAdminSession(), ldifFile.getAbsolutePath());
     int count = loader.execute();
     LOG.info("Krish schema has been loaded with count " + count);
 
@@ -189,6 +193,7 @@ public class EmbeddedADSVerM23 {
     // Disable the ChangeLog system
     directoryService.getChangeLog().setEnabled(false);
     directoryService.setDenormalizeOpAttrsEnabled(true);
+    directoryService.setAccessControlEnabled(true);
     directoryService.startup();
   }
 
@@ -284,6 +289,7 @@ public class EmbeddedADSVerM23 {
 
   /**
    * starts the LdapServer
+   * 
    * @throws Exception
    */
   public void startServer(InstanceLayout layout, int serverPort) throws Exception {
@@ -292,6 +298,7 @@ public class EmbeddedADSVerM23 {
     loadJpmisSchema();
     changePassword(new Dn("uid=admin, ou=system"), "secret", "krish".getBytes());
     addJpmisPartition();
+    addSearchEnableUser();
     server = new LdapServer();
     server.setTransports(new TcpTransport(serverPort));
     server.setDirectoryService(directoryService);
@@ -300,6 +307,7 @@ public class EmbeddedADSVerM23 {
 
   /**
    * Stop the server and services
+   * 
    * @throws Exception
    */
   public void stopServer() throws Exception {
@@ -316,13 +324,56 @@ public class EmbeddedADSVerM23 {
     directoryService.getAdminSession().modify(modifyRequest);
   }
 
+  
+  private void addSearchEnableUser() throws Exception {
+    ModifyRequest modReq = new ModifyRequestImpl();
+    modReq.setName( new Dn("dc=jpmis,dc=com"));
+    modReq.add( "administrativeRole", "accessControlSpecificArea" );
+    directoryService.getAdminSession().modify( modReq );
+    
+    //@formatter:off
+    addPrescriptiveACI(
+        "{ " +
+            "  identificationTag \"directoryManagerReadOnlyAccessACI\", " +
+            "  precedence 11, " +
+            "  authenticationLevel simple, " +
+            "  itemOrUserFirst userFirst: " +
+            "  { " +
+            "    userClasses { allUsers}, " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems {entry, allUserAttributeTypesAndValues}, " +
+            "        grantsAndDenials { grantRead, grantReturnDN, grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  } " +
+            "}");
+     //@formatter:on
+  }
+
+  private void addPrescriptiveACI(String aciItem) throws Exception {
+    Entry subEntry = new DefaultEntry(
+        "cn=" + "directoryManagerReadOnlyAccessACI" + ",dc=jpmis,dc=com",
+        "objectClass: top",
+        "objectClass: subentry",
+        "objectClass: accessControlSubentry",
+        "subtreeSpecification", "{}",
+        "prescriptiveACI", aciItem );
+    AddRequest addRequest = new AddRequestImpl();
+    addRequest.setEntry( subEntry );
+    directoryService.getAdminSession().add(addRequest);
+  }
+ 
+
   public DirectoryService getDirectoryService() {
     return directoryService;
   }
 
   /**
    * 
-   * This is for testing purpose.  DO NOT REMOVE
+   * This is for testing purpose. DO NOT REMOVE
+   * 
    * @param args
    * @throws Exception
    */
@@ -334,10 +385,10 @@ public class EmbeddedADSVerM23 {
     eadSchemaService.createUser("krish", "krish");
     eadSchemaService.createGroup("ND-POC-ENG");
     eadSchemaService.addUserToGroup("krish", "ND-POC-ENG");
-    
+
     eadSchemaService.createUser("jim", "jim");
     eadSchemaService.addUserToGroup("jim", "ND-POC-ENG");
-    
+
     eadSchemaService.createUser("chris", "chris");
     eadSchemaService.addUserToGroup("chris", "ND-POC-ENG");
   }

@@ -3,6 +3,8 @@ package com.krish.directory.service;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.message.AddRequest;
+import org.apache.directory.api.ldap.model.message.AddRequestImpl;
 import org.apache.directory.api.ldap.model.message.ModifyRequest;
 import org.apache.directory.api.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.api.ldap.model.name.Dn;
@@ -166,7 +168,7 @@ public class EadSchemaService {
     }
     return attr.contains("cn=" + groupCn + ",ou=groups,dc=jpmis,dc=com");
   }
-
+  
   /**
    * @throws Exception
    */

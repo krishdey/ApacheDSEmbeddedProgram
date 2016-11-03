@@ -88,13 +88,13 @@ if [ "$EAD_ACTION" = "start" ]; then
 elif [ "$EAD_ACTION" = "run" ]; then
     # Printing instance information
     [ $HAVE_TTY -eq 1 ] && echo "Running EAD instance '$EAD_INSTANCE_NAME'..."
-      eval "\"$RUN_JAVA\"" \
-     -Dlog4j.configuration="\"file:$EAD_HOME/conf/log4j.properties\"" \
-     -Dapacheds.log.dir="\"$EAD_HOME/log\"" \
-     -Dead.server.port=10389 \
-     -Dhadoop-group-mapping=/Hadoop/hadoop-group-mapping.xml \
+      eval exec "\"$RUN_JAVA\"" \
+     $EAD_JAVA_OPTS \
+     -Dlog4j.configuration="\"file:$EAD_HOME/log4j.properties\"" \
+     -Dead.server.port=$EAD_PORT \
+     -Dhadoop-group-mapping=$EAD_XML_PATH \
      -classpath "\"$CLASSPATH\"" \
-      com.krish.ead.server.EADServer "\"$EAD_INSTANCE\""
+    com.krish.ead.server.EADServer "\"$EAD_INSTANCE\""
 
 elif [ "$EAD_ACTION" = "status" ]; then
     if [ -f $EAD_PID ]; then
@@ -111,7 +111,7 @@ elif [ "$EAD_ACTION" = "stop" ]; then
     # Printing instance information
     if [ -f $EAD_PID ]; then
         PID=`cat $EAD_PID`
-        [ $HAVE_TTY -eq 1 ] && echo "Stopping EAD Servr instance '$EAD_INSTANCE_NAME' running as $PID"
+        [ $HAVE_TTY -eq 1 ] && echo "Stopping EAD Server instance '$EAD_INSTANCE_NAME' running as $PID"
 
         kill -15 $PID > /dev/null 2>&1
 
@@ -120,13 +120,15 @@ elif [ "$EAD_ACTION" = "stop" ]; then
             kill -0 $PID > /dev/null 2>&1 -gt 0
             if [ $? > 0 ]; then
                 rm -f $EAD_PID > /dev/null 2>&1
-                [ $HAVE_TTY -eq 1 ] && echo "EAD Servr instance '$EAD_INSTANCE_NAME' stopped successfully"
+                [ $HAVE_TTY -eq 1 ] && echo "EAD Server instance '$EAD_INSTANCE_NAME' stopped successfully"
                 break
             fi
             sleep 1
             ATTEMPTS_REMAINING=`expr $ATTEMPTS_REMAINING - 1`
         done
     else
-        [ $HAVE_TTY -eq 1 ] && echo "EAD Servr is not running, $EAD_PID does not exist"
+        [ $HAVE_TTY -eq 1 ] && echo "EAD Server is not running, $EAD_PID does not exist"
+        ps -ef | grep "JPMISEAD" | grep -v grep | xargs kill -9
+
     fi
 fi
